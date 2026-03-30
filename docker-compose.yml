@@ -1,0 +1,48 @@
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # Dashboard web
+    environment:
+      RABBITMQ_DEFAULT_USER: kalo
+      RABBITMQ_DEFAULT_PASS: kalo
+    volumes:
+      - rabbitmq-lib:/var/lib/rabbitmq/
+      - rabbitmq-log:/var/log/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: ./api
+    container_name: node_api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      RABBITMQ_URL: amqp://kalo:kalo@rabbitmq:5672
+    volumes:
+      - ./api:/app
+      - /app/node_modules        # préserve les node_modules du container
+    depends_on:
+      rabbitmq:
+        condition: service_healthy  # attend que rabbit soit vraiment prêt
+
+  frontend:
+    build: ./Frontend
+    container_name: react_front
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+
+volumes:
+  rabbitmq-lib:
+  rabbitmq-log:
