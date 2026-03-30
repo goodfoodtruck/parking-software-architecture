@@ -1,4 +1,7 @@
 # 001. Plateformes dédiées pour chaque type d'utilisateur
+## Status:
+Approved
+
 ## Contexte:
 On a 3 utilisateurs avec chacun un besoin différent concernant la réservation des places de parking.
 Est-ce que les 3 doivent utiliser la même application qui répond à tous les besoins en même temps,
