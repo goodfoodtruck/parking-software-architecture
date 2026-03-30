@@ -16,12 +16,22 @@ services:
       - rabbitmq-lib:/var/lib/rabbitmq/
       - rabbitmq-log:/var/log/rabbitmq
 
+  app:
+    build: .
+    container_name: node_app
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - rabbitmq
+    volumes:
+      - .:/app
+    command: npm run dev
+
 configs:
   rabbitmq-plugins:
-    content: "[rabbitmq_management]."  
+    content: "[rabbitmq_management]."
 
 volumes:
   rabbitmq-lib:
-    driver: local
   rabbitmq-log:
-    driver: local
