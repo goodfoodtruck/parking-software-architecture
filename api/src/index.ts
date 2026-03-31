@@ -16,11 +16,42 @@ const main = async() => {
 
     app.use(express.json());
     app.use(express.static('src/public'));
+
+    app.use((req, res, next) => {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        next();
+    });
+
+    const parkingLots = (() => {
+        const rows = ["A", "B", "C", "D", "E", "F"];
+        const columns = 10;
+        const result: Array<{ id: number; name: string; electric: boolean; available: boolean }> = [];
+
+        rows.forEach((row, rowIndex) => {
+            for (let col = 1; col <= columns; col += 1) {
+                const number = String(col).padStart(2, '0');
+                const id = rowIndex * columns + col;
+                const name = `${row}${number}`;
+                const electric = row === "A" || row === "F";
+                const available = col % 3 !== 0;
+                result.push({ id, name, electric, available });
+            }
+        });
+
+        return result;
+    })();
+
     const stream = {
         write: (message: string) => logger.info(message.trim())
     }
 
     app.get("/", (req, res) => res.status(200).send({ message: "Test API." }));
+
+    app.get("/parking-lots", (req, res) => {
+        return res.status(200).json(parkingLots);
+    });
     
     app.post("/reservations", (req, res) => reservationController.createReservation(req, res));
 
