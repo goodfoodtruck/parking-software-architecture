@@ -22,7 +22,7 @@ export class TypeORMParkingLotReservationRepository implements IParkingLotReserv
             .createQueryBuilder("r")
             .where("r.parking_lot_id = :parkingLotId", { parkingLotId: parkingLot.id })
             .andWhere(
-                "(r.startDate <= :endDate AND r.endDate >= :startDate)",
+                "(r.start_date <= :endDate AND r.end_date >= :startDate)",
                 { startDate, endDate }
             )
             .getOne()
