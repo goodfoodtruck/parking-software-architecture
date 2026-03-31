@@ -14,12 +14,19 @@ export class ParkingLotController {
         );
 
     async getParkingLots(req: Request, res: Response) {
+        const { startDate, endDate } = req.query as {
+            startDate?: string;
+            endDate?: string;
+        };
+
         const parkingLotsEntities = await this.parkingLotRepository.find();
         const parkingLotsDTO: ParkingLotAvailableDto[] = [];
 
         for (const parkingLot of parkingLotsEntities) {
             const isAvailable = await this.reservationService.isAvailable(
-                parkingLot, new Date(Date.now()), new Date(Date.now())
+                parkingLot,
+                startDate ? new Date(startDate) : new Date(Date.now()),
+                endDate ? new Date(endDate) : new Date(Date.now())
             )
             parkingLotsDTO.push({
                 id: parkingLot.id,
