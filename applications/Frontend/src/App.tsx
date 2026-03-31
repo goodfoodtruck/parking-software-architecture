@@ -7,8 +7,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LoginApp />} />
-        <Route path="profil" element={<ProfilApp />} />
-        <Route path="login" element={<LoginApp />} />
+        <Route path="/profil" element={<ProfilApp />} />
+        <Route path="/login" element={<LoginApp />} />
         <Route path="*" element={<Navigate replace to="/" />} />
       </Routes>
     </BrowserRouter>
