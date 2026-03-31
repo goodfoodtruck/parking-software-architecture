@@ -4,6 +4,9 @@ import logger from './logger';
 import { errorMiddleware } from './middlewares/errorMiddleware';
 import { connectDatabase } from './config/db';
 import { publishReservationCreated } from './producer';
+import { ReservationController } from './controllers/Reservation.controller';
+
+const reservationController = new ReservationController();
 
 const main = async() => {
     const app = express();
@@ -18,6 +21,8 @@ const main = async() => {
     }
 
     app.get("/", (req, res) => res.status(200).send({ message: "Test API." }));
+    
+    app.post("/reservations", (req, res) => reservationController.createReservation(req, res));
 
     app.use(morgan('combined', { stream }));
     await publishReservationCreated({ id: "reservation-1", parkingLotId: "1" })
