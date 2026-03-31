@@ -13,7 +13,7 @@ const main = async() => {
         write: (message: string) => logger.info(message.trim())
     }
 
-    app.get("/", (req, res) => res.status(200).send({ message: "Test notification service." }))
+    app.get("/", (req, res) => res.status(200).send({ message: "Test API." }))
 
     app.use(morgan('combined', { stream }))
     
