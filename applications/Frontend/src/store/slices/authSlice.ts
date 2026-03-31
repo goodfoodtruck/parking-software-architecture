@@ -25,9 +25,6 @@ const initialState: AuthState = {
 export const fetchCurrentUser = createAsyncThunk(
   'auth/fetchCurrentUser',
   async () => {
-    // const response = await fetch('/auth/me', {
-    //   credentials: 'include',
-    // })
     const response = {
       ok: true,
       json: async () => ({
@@ -39,11 +36,8 @@ export const fetchCurrentUser = createAsyncThunk(
         electric: true,
         parked: false,
       }),
-      status: 200,
+      status: 200
     }
-    const response = await fetch('/auth/me', {
-      credentials: 'include',
-    })
 
     if (!response.ok) {
       throw new Error('Impossible de récupérer le profil utilisateur.')

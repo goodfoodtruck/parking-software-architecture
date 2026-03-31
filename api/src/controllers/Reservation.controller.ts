@@ -5,12 +5,16 @@ import { ParkingLot } from "../entities/ParkingLot.entity";
 import { Reservation } from "../entities/Reservation.entity";
 import { ReservationService } from "../services/Reservation.service";
 import { TypeORMParkingLotReservationRepository } from "../infrastructure/repositories/typeorm/TypeORMParkingLotReservationRepository";
+import { TypeORMParkingLotRepository } from "../infrastructure/repositories/typeorm/TypeORMParkingLotRepository";
 
 export class ReservationController {
     private reservationRepository = AppDataSource.getRepository(Reservation);
     private employeeRepository = AppDataSource.getRepository(Employee);
     private parkingLotRepository = AppDataSource.getRepository(ParkingLot);
-    private reservationService = new ReservationService(new TypeORMParkingLotReservationRepository());
+    private reservationService = new ReservationService(
+        new TypeORMParkingLotRepository(),
+        new TypeORMParkingLotReservationRepository()
+    );
 
     async createReservation(req: Request, res: Response) {
         try {

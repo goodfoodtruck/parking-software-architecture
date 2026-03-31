@@ -1,9 +1,11 @@
 import { ParkingLot } from "../entities/ParkingLot.entity";
+import { IParkingLotRepository } from "../repositories/IParkingLotRepository";
 import { IParkingLotReservationRepository } from "../repositories/IParkingLotReservationRepository";
 
 export class ReservationService {
 
     constructor(
+        private readonly parkingLotRepository: IParkingLotRepository,
         private readonly reservationRepository: IParkingLotReservationRepository
     ) {}
 
@@ -16,14 +18,14 @@ export class ReservationService {
         if (! parkingLot) 
             throw new Error("ERROR: Parking lot not found.")
         
-        const parkingLotReservation = await this.parkingLotReservationRepository.findByParkingLotId(parkingLotId)
+        const parkingLotReservation = await this.reservationRepository.findByParkingLotId(parkingLotId)
         if (! parkingLotReservation)
             throw new Error("ERROR: No reservation found for this parking lot.")
         
         if (checkInMakerId !== parkingLotReservation.employee.id) 
             throw new Error("ERROR: The person doing to check in must be the same that reserved the parking lot.")
 
-        await this.parkingLotReservationRepository.save({
+        await this.reservationRepository.save({
             ...parkingLotReservation,
             checkedIn: true
         })
