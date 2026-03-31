@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 
-const AppDataSource = new DataSource({
+export const AppDataSource = new DataSource({
   type: "postgres",
   url: process.env.DATABASE_URL,
   synchronize: false,       // ← ne jamais mettre true en prod
