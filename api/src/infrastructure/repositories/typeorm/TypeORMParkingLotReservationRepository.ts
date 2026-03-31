@@ -20,9 +20,9 @@ export class TypeORMParkingLotReservationRepository implements IParkingLotReserv
     async isAvailable(parkingLot: ParkingLot, startDate: Date, endDate: Date): Promise<boolean> {
         const existingLot = await this.repository
             .createQueryBuilder("r")
-            .where("r.parkingLotId = :parkingLotId", { parkingLotId: parkingLot.id })
+            .where("r.parking_lot_id = :parkingLotId", { parkingLotId: parkingLot.id })
             .andWhere(
-                "(r.startDate <= :endDate AND r.endDate >= :startDate)",
+                "(r.start_date <= :endDate AND r.end_date >= :startDate)",
                 { startDate, endDate }
             )
             .getOne()
