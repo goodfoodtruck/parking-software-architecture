@@ -6,9 +6,11 @@ import { connectDatabase } from './config/db';
 import { publishReservationCreated } from './producer';
 import { ReservationController } from './controllers/Reservation.controller';
 import { EmployeeController } from './controllers/Employee.controller';
+import { ParkingLotController } from './controllers/ParkingLot.controller';
 
 const employeeController = new EmployeeController();
 const reservationController = new ReservationController();
+const parkingLotController = new ParkingLotController();
 
 const main = async() => {
     const app = express();
@@ -51,12 +53,14 @@ const main = async() => {
 
     app.get("/", (req, res) => res.status(200).send({ message: "Test API." }));
 
-    app.get("/parking-lots", (req, res) => {
-        return res.status(200).json(parkingLots);
-    });
+    // Parking lots
+    app.get("/parking-lots", (req, res) => parkingLotController.getParkingLots(req, res));
     
-    app.get("/employees", (req, res) => employeeController.getEmployees(req, res));
+    // Reservations
     app.post("/reservations", (req, res) => reservationController.createReservation(req, res));
+    
+    // Employees
+    app.get("/employees", (req, res) => employeeController.getEmployees(req, res));
 
     app.use(morgan('combined', { stream }));
     await publishReservationCreated({ id: "reservation-1", parkingLotId: "1" })
