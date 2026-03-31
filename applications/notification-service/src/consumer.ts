@@ -1,16 +1,7 @@
 import { connect, ConsumeMessage } from "amqplib"
 
-const config = {
-  protocol: 'amqp',
-  hostname: process.env.RABBITMQ_HOST || 'rabbitmq',
-  port: process.env.RABBITMQ_PORT ? parseInt(process.env.RABBITMQ_PORT) : 5672,
-  username: process.env.RABBITMQ_USER || 'kalo',
-  password: process.env.RABBITMQ_PASS || 'kalo',
-  vhost: process.env.RABBITMQ_VHOST || '/',
-}
-
 export const runConsumer = async (): Promise<void> => {
-    const connection = await connect(config)
+    const connection = await connect(process.env.RABBITMQ_URL!)
     const channel = await connection.createChannel()
 
     const handleMessage = (queue: string) => async (message: ConsumeMessage | null): Promise<void> => {
@@ -26,8 +17,14 @@ export const runConsumer = async (): Promise<void> => {
             channel.ack(message)
         }
     }
-
-    await channel.assertQueue('reservation-queue', { durable: true })
+    
+    await channel.assertExchange("notifications", "topic", { durable: true })
+    const queue = await channel.assertQueue('reservation-queue', { durable: true })
+    await channel.bindQueue(
+        queue.queue,
+        "notifications",
+        "reservation.created"
+    )
     await channel.consume('reservation-queue', handleMessage('reservation-queue'))
 
     console.log('Consumer is subscribed to queues: reservation-queue')

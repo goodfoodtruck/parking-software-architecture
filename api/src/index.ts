@@ -3,6 +3,7 @@ import morgan from "morgan"
 import logger from './logger';
 import { errorMiddleware } from './middlewares/errorMiddleware';
 import { connectDatabase } from './config/db';
+import { publishReservationCreated } from './producer';
 
 const main = async() => {
     const app = express();
@@ -19,6 +20,7 @@ const main = async() => {
     app.get("/", (req, res) => res.status(200).send({ message: "Test API." }));
 
     app.use(morgan('combined', { stream }));
+    await publishReservationCreated({ id: "reservation-1", parkingLotId: "1" })
     
     app.use(errorMiddleware);
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
