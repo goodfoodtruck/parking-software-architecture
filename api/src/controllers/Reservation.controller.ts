@@ -4,12 +4,13 @@ import { Employee } from "../entities/Employee.entity";
 import { ParkingLot } from "../entities/ParkingLot.entity";
 import { Reservation } from "../entities/Reservation.entity";
 import { ReservationService } from "../services/Reservation.service";
+import { TypeORMParkingLotReservationRepository } from "../infrastructure/repositories/typeorm/TypeORMParkingLotReservationRepository";
 
 export class ReservationController {
     private reservationRepository = AppDataSource.getRepository(Reservation);
     private employeeRepository = AppDataSource.getRepository(Employee);
     private parkingLotRepository = AppDataSource.getRepository(ParkingLot);
-    private reservationService = new ReservationService();
+    private reservationService = new ReservationService(new TypeORMParkingLotReservationRepository());
 
     async createReservation(req: Request, res: Response) {
         try {
