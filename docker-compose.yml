@@ -1,5 +1,6 @@
-services:
+version: "3.9"
 
+services:
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: rabbitmq
@@ -21,22 +22,35 @@ services:
 
   api:
     build: ./api
-    container_name: node_api
+    container_name: api
     restart: always
     ports:
-      - "3000:3000"
+      - "3000:8000"
     environment:
       RABBITMQ_URL: amqp://kalo:kalo@rabbitmq:5672
     volumes:
       - ./api:/app
-      - /app/node_modules        # préserve les node_modules du container
+      - /app/node_modules
     depends_on:
       rabbitmq:
-        condition: service_healthy  # attend que rabbit soit vraiment prêt
+        condition: service_healthy
+
+  notification-service:
+    build: ./applications/notification-service
+    container_name: notification-service
+    restart: always
+    environment:
+      RABBITMQ_URL: amqp://kalo:kalo@rabbitmq:5672
+    volumes:
+      - ./applications/notification-service:/app
+      - /app/node_modules
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   frontend:
-    build: ./Frontend
-    container_name: react_front
+    build: ./applications/Frontend
+    container_name: frontend
     restart: always
     ports:
       - "80:80"

@@ -5,15 +5,12 @@ import { errorMiddleware } from './middlewares/errorMiddleware';
 
 const main = async() => {
     const app = express()
-    const PORT = 8000
+    const PORT = 8001
 
     app.use(express.json())
-    app.use(express.static('src/public'));
     const stream = {
         write: (message: string) => logger.info(message.trim())
     }
-
-    app.get("/", (req, res) => res.status(200).send({ message: "Test notification service." }))
 
     app.use(morgan('combined', { stream }))
     
