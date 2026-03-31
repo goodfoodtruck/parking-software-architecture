@@ -1,12 +1,18 @@
-import { Button } from "@/components/ui/button"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import LoginApp from "./pages/authentification/App";
+import ProfilApp from "./pages/profil/App";
 
-const App = () => {
-    return (
-        <div className="flex flex-col gap-4">
-            <span>This is a Shadcn + React boilerplate</span>
-            <Button className="w-max">Test button</Button>
-        </div>
-    )
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LoginApp />} />
+        <Route path="profil" element={<ProfilApp />} />
+        <Route path="login" element={<LoginApp />} />
+        <Route path="*" element={<Navigate replace to="/" />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
