@@ -41,13 +41,15 @@ export const fetchCurrentUser = createAsyncThunk(
       }),
       status: 200,
     }
+    const response = await fetch('/auth/me', {
+      credentials: 'include',
+    })
 
     if (!response.ok) {
       throw new Error('Impossible de récupérer le profil utilisateur.')
     }
 
-    // return (await response.json()) as UserData
-    return response;
+    return (await response.json()) as UserData
   }
 )
 
