@@ -1,5 +1,5 @@
 -- table des employés
-CREATE TABLE IF NOT EXISTS employee (
+CREATE TABLE employee (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS employee (
 -- table des parkings
 CREATE TABLE parking_lot (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
+    name VARCHAR(50) NOT NULL,
+    electric BOOLEAN NOT NULL DEFAULT false
 );
 
 -- table des réservations
@@ -27,9 +28,17 @@ INSERT INTO employee (name) VALUES
   ('Charlie');
 
 -- insérer les parkings
-INSERT INTO parking_lot (name) VALUES
-  ('A01'),
-  ('B01');
+INSERT INTO parking_lot (name, electric)
+SELECT 
+    row_letter || LPAD(col::text, 2, '0') AS name,
+    (row_letter = 'A' OR row_letter = 'F') AS electric
+FROM (
+    SELECT 
+        chr(65 + r) AS row_letter,
+        c AS col
+    FROM generate_series(0, 5) AS r
+    CROSS JOIN generate_series(1, 10) AS c
+) t;
 
 -- insérer les réservations
 INSERT INTO reservation (employee_id, parking_lot_id, start_date, end_date, checked_in) VALUES

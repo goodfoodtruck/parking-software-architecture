@@ -9,6 +9,9 @@ export class ParkingLot {
   @Column()
   name!: string;
 
+  @Column()
+  electric!: boolean;
+
   @OneToMany(() => Reservation, (reservation: Reservation) => reservation.parkingLot)
   reservations!: Reservation[];
 }
