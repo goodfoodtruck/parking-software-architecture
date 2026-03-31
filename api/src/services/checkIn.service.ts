@@ -8,10 +8,21 @@ export class CheckInService {
         private readonly parkingLotReservationRepository: IParkingLotReservationRepository
     ) {}
 
-    checkInParkingLot(parkingLotId: string) {
-        // get parking lot
-        // check if a reservation exists
-        // check if user making request is the same that reserved the lot
-        // save parking lot status as checkedIn
+    async checkInParkingLot(parkingLotId: number, checkInMakerId: number) {
+        const parkingLot = await this.parkingLotRepository.findById(parkingLotId)
+        if (! parkingLot) 
+            throw new Error("ERROR: Parking lot not found.")
+        
+        const parkingLotReservation = await this.parkingLotReservationRepository.findByParkingLotId(parkingLotId)
+        if (! parkingLotReservation)
+            throw new Error("ERROR: No reservation found for this parking lot.")
+        
+        if (checkInMakerId !== parkingLotReservation.employee.id) 
+            throw new Error("ERROR: The person doing to check in must be the same that reserved the parking lot.")
+
+        await this.parkingLotReservationRepository.save({
+            ...parkingLotReservation,
+            checkedIn: true
+        })
     }
 }
