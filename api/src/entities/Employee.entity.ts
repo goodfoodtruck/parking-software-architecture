@@ -1,12 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Reservation } from "./Reservation.entity";
 
-@Entity()
+@Entity("employee")
 export class Employee {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ name: "name" })
   name!: string;
 
   @OneToMany(() => Reservation, (reservation: Reservation) => reservation.employee)

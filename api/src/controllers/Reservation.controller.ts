@@ -29,10 +29,11 @@ export class ReservationController {
             }
 
             const reservation = this.reservationRepository.create({
-                employee: { id: employeeId },
-                parkingLot: { id: parkingLotId },
+                employee: employeeId,
+                parkingLot: parkingLotId,
                 startDate: new Date(startDate),
                 endDate: new Date(endDate),
+                checkedIn: false
             });
 
             await this.reservationRepository.save(reservation);

@@ -5,7 +5,9 @@ import { errorMiddleware } from './middlewares/errorMiddleware';
 import { connectDatabase } from './config/db';
 import { publishReservationCreated } from './producer';
 import { ReservationController } from './controllers/Reservation.controller';
+import { EmployeeController } from './controllers/Employee.controller';
 
+const employeeController = new EmployeeController();
 const reservationController = new ReservationController();
 
 const main = async() => {
@@ -53,6 +55,7 @@ const main = async() => {
         return res.status(200).json(parkingLots);
     });
     
+    app.get("/employees", (req, res) => employeeController.getEmployees(req, res));
     app.post("/reservations", (req, res) => reservationController.createReservation(req, res));
 
     app.use(morgan('combined', { stream }));

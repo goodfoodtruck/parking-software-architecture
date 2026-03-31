@@ -5,7 +5,7 @@ export const AppDataSource = new DataSource({
   url: process.env.DATABASE_URL,
   synchronize: false,       // ← ne jamais mettre true en prod
   logging: process.env.NODE_ENV === "development",
-  entities: ["src/entities/**/*.js"],
+  entities: ["dist/entities/*.js"],
   migrations: ["src/migrations/**/*.js"],
 });
 
