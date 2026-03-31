@@ -1,20 +1,31 @@
-import { AppDataSource } from "../config/db";
 import { ParkingLot } from "../entities/ParkingLot.entity";
-import { Reservation } from "../entities/Reservation.entity";
+import { IParkingLotReservationRepository } from "../repositories/IParkingLotReservationRepository";
 
 export class ReservationService {
-    private reservationRepository = AppDataSource.getRepository(Reservation);
+
+    constructor(
+        private readonly reservationRepository: IParkingLotReservationRepository
+    ) {}
 
     async isAvailable(parkingLot: ParkingLot, startDate: Date, endDate: Date): Promise<boolean> {
-        const existing = await this.reservationRepository
-            .createQueryBuilder("r")
-            .where("r.parking_lot_id = :parkingLotId", { parkingLotId: parkingLot.id })
-            .andWhere(
-                "(r.start_date <= :endDate AND r.end_date >= :startDate)",
-                { startDate, endDate }
-            )
-            .getOne();
+        return this.reservationRepository.isAvailable(parkingLot, startDate, endDate)
+    }
 
-        return ! existing;
+    async checkInParkingLot(parkingLotId: number, checkInMakerId: number) {
+        const parkingLot = await this.parkingLotRepository.findById(parkingLotId)
+        if (! parkingLot) 
+            throw new Error("ERROR: Parking lot not found.")
+        
+        const parkingLotReservation = await this.parkingLotReservationRepository.findByParkingLotId(parkingLotId)
+        if (! parkingLotReservation)
+            throw new Error("ERROR: No reservation found for this parking lot.")
+        
+        if (checkInMakerId !== parkingLotReservation.employee.id) 
+            throw new Error("ERROR: The person doing to check in must be the same that reserved the parking lot.")
+
+        await this.parkingLotReservationRepository.save({
+            ...parkingLotReservation,
+            checkedIn: true
+        })
     }
 }
