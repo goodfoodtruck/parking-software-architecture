@@ -1,12 +1,13 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginApp from "./pages/authentification/App";
 import ProfilApp from "./pages/profil/App";
+import HomeApp from "./pages/home/App";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginApp />} />
+        <Route path="/" element={<HomeApp />} />
         <Route path="/profil" element={<ProfilApp />} />
         <Route path="/login" element={<LoginApp />} />
         <Route path="*" element={<Navigate replace to="/" />} />
