@@ -8,6 +8,7 @@ const UserService = {
     // );
 
     const mockedUserProfile: UserData = {
+      id: 1,
       firstName: "John",
       lastName: "Doe",
       phone: "123-456-7890",

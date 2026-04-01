@@ -2,6 +2,7 @@ import UserService from '@/services/user/userService'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface UserData {
+  id?: number;
   firstName: string;
   lastName: string;
   phone: string;
