@@ -20,12 +20,14 @@ const createReservationController = (): ReservationController => {
 
 const createEmployeeController = (): EmployeeController => {
     const employeeService = new EmployeeService(employeeRepository)
-    const controller = new EmployeeController(employeeService)
+    const reservationService = new ReservationService(employeeRepository, parkingLotRepository, reservationRepository);
+    const controller = new EmployeeController(employeeService, reservationService);
     return controller
 }
 
 const createParkingLotController = (): ParkingLotController => {
-    const parkingLotService = new ParkingLotService(parkingLotRepository)    
+    const reservationService = new ReservationService(employeeRepository, parkingLotRepository, reservationRepository)
+    const parkingLotService = new ParkingLotService(parkingLotRepository, reservationService)    
     const controller = new ParkingLotController(parkingLotService)
     return controller
 }
