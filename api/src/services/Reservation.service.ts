@@ -7,6 +7,9 @@ import { IParkingLotReservationRepository } from "../repositories/IParkingLotRes
 
 export class ReservationService {
 
+    private readonly EMPLOYEE_MAX_RESERVATION_DURATION_DAYS = 5
+    private readonly MANAGER_MAX_RESERVATION_DURATION_DAYS = 30
+
     constructor(
         private readonly employeeRepository: IEmployeeRepository,
         private readonly parkingLotRepository: IParkingLotRepository,
@@ -17,6 +20,8 @@ export class ReservationService {
         const employee = await this.employeeRepository.findById(dto.employeeId)
         if (! employee)
             throw new Error("ERROR: Employee not found.")
+
+        this.validateReservationDates(dto.startDate, dto.endDate, this.EMPLOYEE_MAX_RESERVATION_DURATION_DAYS)
 
         const parkingLot = await this.parkingLotRepository.findById(dto.parkingLotId)
         if (! parkingLot) 
@@ -58,5 +63,19 @@ export class ReservationService {
             ...parkingLotReservation,
             checkedIn: true
         })
+    }
+
+    validateReservationDates(startDate: Date, endDate: Date, maxDurationInDays: number): boolean {
+        const msPerDay = 24 * 60 * 60 * 1000
+
+        const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())
+        const end = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate())
+
+        if (end < start) 
+            return false
+
+        const durationInDays = Math.floor((end.getTime() - start.getTime()) / msPerDay) + 1
+
+        return ((durationInDays >= 1) && (durationInDays <= maxDurationInDays))
     }
 }

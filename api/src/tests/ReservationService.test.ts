@@ -56,5 +56,53 @@ describe("Tests on reservation creation", () => {
             })
         ).rejects.toThrow()
     })
+
+    it("should validate employee reservation right and wrong durations", () => {
+        const EMPLOYEE_MAX_RESERVATION_DURATION_DAYS = 5
+        const employeeRepository = new InMemoryEmployeeRepository()
+        const parkingLotRepository = new InMemoryParkingLotRepository()
+        const reservationRepository = new InMemoryReservationRepository()
+        const reservationService = new ReservationService(employeeRepository, parkingLotRepository, reservationRepository)
+
+        const rightDurationValidated = reservationService.validateReservationDates(
+            new Date("2026-04-01"), 
+            new Date("2026-04-05"), 
+            EMPLOYEE_MAX_RESERVATION_DURATION_DAYS
+        )
+
+        const wrongDurationValidated = reservationService.validateReservationDates(
+            new Date("2026-04-01"), 
+            new Date("2026-04-06"), 
+            EMPLOYEE_MAX_RESERVATION_DURATION_DAYS
+        )
+
+        expect(rightDurationValidated).toBe(true)
+        expect(wrongDurationValidated).toBe(false)
+    })
+
+    it("should validate manager reservation right and wrong durations", () => {
+        const MANAGER_MAX_RESERVATION_DURATION_DAYS = 30
+        const employeeRepository = new InMemoryEmployeeRepository()
+        const parkingLotRepository = new InMemoryParkingLotRepository()
+        const reservationRepository = new InMemoryReservationRepository()
+        const reservationService = new ReservationService(employeeRepository, parkingLotRepository, reservationRepository)
+
+        // more than 1 and less than 30 days
+        const rightDurationValidated = reservationService.validateReservationDates(
+            new Date("2026-04-01"), 
+            new Date("2026-04-05"), 
+            MANAGER_MAX_RESERVATION_DURATION_DAYS
+        )
+
+        // more than 30 days
+        const wrongDurationValidated = reservationService.validateReservationDates(
+            new Date("2026-04-01"), 
+            new Date("2026-05-02"), 
+            MANAGER_MAX_RESERVATION_DURATION_DAYS
+        )
+
+        expect(rightDurationValidated).toBe(true)
+        expect(wrongDurationValidated).toBe(false)
+    })
 })
 
