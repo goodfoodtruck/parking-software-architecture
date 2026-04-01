@@ -21,6 +21,6 @@ export class Reservation {
   @Column({ name: "end_date" })
   endDate!: Date;
 
-  @Column({ name: "checked_in" })
+  @Column({ name: "checked_in", default: false })
   checkedIn!: boolean;
 }

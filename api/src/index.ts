@@ -3,12 +3,7 @@ import morgan from "morgan"
 import logger from './logger';
 import { errorMiddleware } from './middlewares/errorMiddleware';
 import { connectDatabase } from './config/db';
-import { publishReservationCreated } from './producer';
-import { ReservationController } from './controllers/Reservation.controller';
-import { EmployeeController } from './controllers/Employee.controller';
-
-const employeeController = new EmployeeController();
-const reservationController = new ReservationController();
+import { employeeController, parkingLotController, reservationController } from './init';
 
 const main = async() => {
     const app = express();
@@ -26,40 +21,15 @@ const main = async() => {
         next();
     });
 
-    const parkingLots = (() => {
-        const rows = ["A", "B", "C", "D", "E", "F"];
-        const columns = 10;
-        const result: Array<{ id: number; name: string; electric: boolean; available: boolean }> = [];
-
-        rows.forEach((row, rowIndex) => {
-            for (let col = 1; col <= columns; col += 1) {
-                const number = String(col).padStart(2, '0');
-                const id = rowIndex * columns + col;
-                const name = `${row}${number}`;
-                const electric = row === "A" || row === "F";
-                const available = col % 3 !== 0;
-                result.push({ id, name, electric, available });
-            }
-        });
-
-        return result;
-    })();
-
     const stream = {
         write: (message: string) => logger.info(message.trim())
     }
 
-    app.get("/", (req, res) => res.status(200).send({ message: "Test API." }));
-
-    app.get("/parking-lots", (req, res) => {
-        return res.status(200).json(parkingLots);
-    });
-    
-    app.get("/employees", (req, res) => employeeController.getEmployees(req, res));
-    app.post("/reservations", (req, res) => reservationController.createReservation(req, res));
+    app.use("/parking-lots", parkingLotController.getRouter())
+    app.use("/employees", employeeController.getRouter())
+    app.use("/reservations", reservationController.getRouter())
 
     app.use(morgan('combined', { stream }));
-    await publishReservationCreated({ id: "reservation-1", parkingLotId: "1" })
     
     app.use(errorMiddleware);
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

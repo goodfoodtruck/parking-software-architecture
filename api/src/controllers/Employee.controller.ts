@@ -1,12 +1,22 @@
-import { Request, Response } from "express";
-import { Employee } from "../entities/Employee.entity";
-import { AppDataSource } from "../config/db";
+import { NextFunction, Request, Response } from "express";
+import { EmployeeService } from "../services/Employee.service";
+import { AController } from "./AController";
 
-export class EmployeeController {
-    private employeeRepository = AppDataSource.getRepository(Employee);
+export class EmployeeController extends AController {
+    constructor(
+        private readonly employeeService: EmployeeService
+    ) {
+        super()
+        this.router.get("/", this.getEmployees)
+    }
 
-    async getEmployees(req: Request, res: Response) {
-        const employees = await this.employeeRepository.find();
-        return res.status(200).json(employees);
+    private getEmployees = async(req: Request, res: Response, next: NextFunction) => {
+        try {
+            const employees = await this.employeeService.getEmployees()
+            return res.status(200).json(employees)
+        }
+        catch(error) {
+            next(error)
+        }
     }
 }
