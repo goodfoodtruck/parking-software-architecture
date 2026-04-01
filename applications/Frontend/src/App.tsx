@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginApp from "./pages/authentification/App";
-import ProfilApp from "./pages/profil/App";
+import ProfileApp from "./pages/profile/App";
 import HomeApp from "./pages/home/App";
 import ManagerDashboard from "./pages/dashboard/ManagerDashboard";
 
@@ -9,9 +9,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomeApp />} />
-        <Route path="/profil" element={<ProfilApp />} />
+        <Route path="/profil" element={<ProfileApp />} />
         <Route path="/dashboard" element={<ManagerDashboard />} />
         <Route path="/login" element={<LoginApp />} />
+        <Route path="/resources" element={<SecretaryApp />} />
         <Route path="*" element={<Navigate replace to="/" />} />
       </Routes>
     </BrowserRouter>
