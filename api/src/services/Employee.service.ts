@@ -7,6 +7,6 @@ export class EmployeeService {
     ) {}
 
     async getEmployees(): Promise<Employee[]> {
-        return this.employeeRepository.findAll()
+        return await this.employeeRepository.findAll()
     }
 }

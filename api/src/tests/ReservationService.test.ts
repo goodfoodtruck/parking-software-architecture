@@ -9,7 +9,7 @@ import { InMemoryReservationRepository } from "./mocks/repositories/InMemoryRese
 describe("Tests on reservation creation", () => {
     it("should create a reservation when parking lot is available", async () => {
         const employees = [{ id: 1, name: "John", reservations: [] }]
-        const parkingLots = [{ id: 1, name: "A1", reservations: [] }]
+        const parkingLots: ParkingLot[] = [{ id: 1, name: "A1", electric: false, reservations: [] }]
 
         const employeeRepository = new InMemoryEmployeeRepository(employees)
         const parkingLotRepository = new InMemoryParkingLotRepository(parkingLots)
@@ -29,7 +29,7 @@ describe("Tests on reservation creation", () => {
 
     it("should throw an error while trying create a reservation when parking lot is not available", async () => {
         const employee: Employee = { id: 1, name: "John", reservations: [] }
-        const parkingLot: ParkingLot = { id: 1, name: "A1", reservations: [] }
+        const parkingLot: ParkingLot = { id: 1, name: "A1", electric: false, reservations: [] }
         const existingReservation: Reservation = {
             id: 1,
             employee,
