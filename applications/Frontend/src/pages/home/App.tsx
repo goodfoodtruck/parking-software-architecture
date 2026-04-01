@@ -1,16 +1,24 @@
-import { useMemo, useState } from "react";
-import { mockedParkingLots, mockedUserProfile, ParkingLot } from "./types";
+import { useEffect, useMemo, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchCurrentUser } from "@/store/slices/userSlice";
+import { fetchParkingPlaces, parkingPlacesData } from "@/store/slices/parkingSlice";
 
 const HomeApp = () => {
-  const [parkingLots] = useState<ParkingLot[]>(mockedParkingLots);
-  const [userProfile] = useState(mockedUserProfile);
+  const dispatch = useAppDispatch();
+  const parkingLots = useAppSelector((state) => state.parking.parkingPlaces);
+  const userProfile = useAppSelector((state) => state.auth.user);
   const [selectedLotId, setSelectedLotId] = useState<number | null>(null);
 
+  useEffect(() => {
+    dispatch(fetchCurrentUser());
+    dispatch(fetchParkingPlaces());
+  }, [dispatch]);
+
   const selectedLot = parkingLots.find((lot) => lot.id === selectedLotId) ?? null;
-  const isElectricUser = userProfile.electric;
+  const isElectricUser = userProfile?.electric ?? false;
 
   const lotByName = useMemo(() => {
-    const map = new Map<string, ParkingLot>();
+    const map = new Map<string, parkingPlacesData>();
     parkingLots.forEach((lot) => map.set(lot.name, lot));
     return map;
   }, [parkingLots]);
@@ -29,6 +37,8 @@ const HomeApp = () => {
             </p>
           </div>
 
+        {userProfile ? (
+            <>
           <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
             <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
               <h2 className="text-xl font-semibold text-slate-800">Profil utilisateur</h2>
@@ -73,7 +83,7 @@ const HomeApp = () => {
                     </div>
                     <div className="flex items-center gap-2 text-sm text-slate-700">
                       <span className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1 text-amber-800">
-                        ⚡ {selectedLot.electric ? 'Électrique' : 'Non électrique'}
+                        ⚡ {selectedLot.isElectric ? 'Électrique' : 'Non électrique'}
                       </span>
                     </div>
                     <p className="text-sm text-slate-600">
@@ -87,7 +97,7 @@ const HomeApp = () => {
                       <span className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-emerald-800">Disponible</span>
                       <span className="inline-flex items-center gap-2 rounded-full bg-slate-200 px-3 py-1 text-slate-600">Occupée</span>
                       <span className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1 text-amber-800">Électrique</span>
-                      {!isElectricUser && (
+                      {!userProfile.electric && (
                         <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-slate-500">Non compatible</span>
                       )}
                     </div>
@@ -122,7 +132,7 @@ const HomeApp = () => {
                       const name = `${row}${String(col).padStart(2, '0')}`;
                       const lot = lotByName.get(name);
                       const available = lot?.available ?? false;
-                      const electric = lot?.electric ?? false;
+                      const electric = lot?.isElectric ?? false;
                       const nonCompatible = !isElectricUser && electric;
                       const disabled = !available || nonCompatible;
 
@@ -148,6 +158,14 @@ const HomeApp = () => {
               </div>
             </div>
           </section>
+</>
+        ) : (
+          <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-600">
+            Aucun profil n'est connecté...
+          </div>
+        )}
+
+
         </div>
       </div>
     </div>
