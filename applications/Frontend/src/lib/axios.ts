@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios';
 import axiosError from './axiosError';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACK_URL,
+  baseURL: import.meta.env.VITE_BACK_URL,
   timeout: 1000,
   headers: { 'Content-Type': 'application/json' }
 });
