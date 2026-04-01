@@ -4,5 +4,5 @@ import { Reservation } from "../entities/Reservation.entity";
 export interface IParkingLotReservationRepository {
     save(reservation: Reservation): Promise<Reservation>
     findByParkingLotId(id: number): Promise<Reservation | null>
-    isAvailable(parkingLot: ParkingLot, startDate: Date, endDate: Date): Promise<boolean>
+    isAvailable(parkingLotId: number, startDate: Date, endDate: Date): Promise<boolean>
 }

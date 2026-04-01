@@ -21,14 +21,14 @@ export class InMemoryReservationRepository implements IParkingLotReservationRepo
         return this.reservations.find(r => r.parkingLot.id === id) || null
     }
 
-    async isAvailable(parkingLot: ParkingLot, startDate: Date, endDate: Date): Promise<boolean> {
-        const overlap = this.reservations.find(r =>
-            r.parkingLot.id === parkingLot.id
+    async isAvailable(parkingLotId: number, startDate: Date, endDate: Date): Promise<boolean> {
+        const existingReservation = this.reservations.find(r =>
+            r.parkingLot.id === parkingLotId
             && r.startDate <= endDate
             && r.endDate >= startDate
         )
 
-        return overlap === undefined
+        return existingReservation === undefined
     }
 
     add(reservation: Reservation) {
