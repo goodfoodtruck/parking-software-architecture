@@ -1,6 +1,6 @@
-.PHONY: up
+.PHONY: start
 
-up:
+start:
 	docker compose up -d
 
 build:

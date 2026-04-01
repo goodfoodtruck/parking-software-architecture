@@ -1,41 +1,22 @@
-import { Request, Response } from "express";
-import { AppDataSource } from "../config/db";
-import { ParkingLot } from "../entities/ParkingLot.entity";
-import { ParkingLotAvailableDto } from "./dtos/parking-lots/ParkingLotAvailable.dto";
-import { ReservationService } from "../services/Reservation.service";
-import { TypeORMParkingLotRepository } from "../infrastructure/repositories/typeorm/TypeORMParkingLotRepository";
-import { TypeORMParkingLotReservationRepository } from "../infrastructure/repositories/typeorm/TypeORMParkingLotReservationRepository";
+import { NextFunction, Request, Response } from "express";
+import { AController } from "./AController";
+import { ParkingLotService } from "../services/ParkingLot.service";
 
-export class ParkingLotController {
-        private parkingLotRepository = AppDataSource.getRepository(ParkingLot);
-        private reservationService = new ReservationService(
-            new TypeORMParkingLotRepository(),
-            new TypeORMParkingLotReservationRepository()
-        );
+export class ParkingLotController extends AController {
+    constructor(
+        private readonly parkingLotService: ParkingLotService
+    ) {
+        super()
+        this.router.get("/", this.getParkingLots)
+    }
 
-    async getParkingLots(req: Request, res: Response) {
-        const { startDate, endDate } = req.query as {
-            startDate?: string;
-            endDate?: string;
-        };
-
-        const parkingLotsEntities = await this.parkingLotRepository.find();
-        const parkingLotsDTO: ParkingLotAvailableDto[] = [];
-
-        for (const parkingLot of parkingLotsEntities) {
-            const isAvailable = await this.reservationService.isAvailable(
-                parkingLot,
-                startDate ? new Date(startDate) : new Date(Date.now()),
-                endDate ? new Date(endDate) : new Date(Date.now())
-            )
-            parkingLotsDTO.push({
-                id: parkingLot.id,
-                name: parkingLot.name,
-                electric: parkingLot.electric,
-                available: isAvailable
-            });
+    private getParkingLots = async(req: Request, res: Response, next: NextFunction) => {
+        try {
+            const parkingLots = await this.parkingLotService.getAll()
+            return res.status(200).json(parkingLots)
         }
-        
-        return res.status(200).json(parkingLotsDTO);
+        catch(error) {
+            next(error)
+        }
     }
 }
