@@ -1,11 +1,14 @@
 import { CreateReservationDTO } from "../dtos/in/CreateReservationDTO";
-import { ParkingLot } from "../entities/ParkingLot.entity";
 import { Reservation } from "../entities/Reservation.entity";
+import { publishReservationCreated } from "../producer";
 import { IEmployeeRepository } from "../repositories/IEmployeeRepository";
 import { IParkingLotRepository } from "../repositories/IParkingLotRepository";
 import { IParkingLotReservationRepository } from "../repositories/IParkingLotReservationRepository";
 
 export class ReservationService {
+
+    private readonly EMPLOYEE_MAX_RESERVATION_DURATION_DAYS = 5
+    private readonly MANAGER_MAX_RESERVATION_DURATION_DAYS = 30
 
     constructor(
         private readonly employeeRepository: IEmployeeRepository,
@@ -18,19 +21,23 @@ export class ReservationService {
         if (! employee)
             throw new Error("ERROR: Employee not found.")
 
+        const startDate = new Date(dto.startDate)
+        const endDate = new Date(dto.endDate)
+        this.validateReservationDates(startDate, endDate, this.EMPLOYEE_MAX_RESERVATION_DURATION_DAYS)
+
         const parkingLot = await this.parkingLotRepository.findById(dto.parkingLotId)
         if (! parkingLot) 
             throw new Error("ERROR: Parking lot not found.")
 
-        const available = await this.isAvailable(parkingLot, dto.startDate, dto.endDate)
+        const available = await this.isAvailable(parkingLot.id, startDate, endDate)
         if (! available) 
             throw new Error("ERROR: Parking lot is not available.")
         
         const reservation = new Reservation()
         reservation.employee = employee
         reservation.parkingLot = parkingLot
-        reservation.startDate = new Date(dto.startDate)
-        reservation.endDate = new Date(dto.endDate)
+        reservation.startDate = startDate
+        reservation.endDate = endDate
         reservation.checkedIn = false
 
         const createdReservation = await this.reservationRepository.save(reservation)
@@ -38,8 +45,8 @@ export class ReservationService {
         return createdReservation
     }
 
-    async isAvailable(parkingLot: ParkingLot, startDate: Date, endDate: Date): Promise<boolean> {
-        return this.reservationRepository.isAvailable(parkingLot, startDate, endDate)
+    async isAvailable(parkingLotId: number, startDate: Date, endDate: Date): Promise<boolean> {
+        return this.reservationRepository.isAvailable(parkingLotId, startDate, endDate)
     }
 
     async checkInParkingLot(parkingLotId: number, checkInMakerId: number) {
@@ -58,5 +65,19 @@ export class ReservationService {
             ...parkingLotReservation,
             checkedIn: true
         })
+    }
+
+    validateReservationDates(startDate: Date, endDate: Date, maxDurationInDays: number): boolean {
+        const msPerDay = 24 * 60 * 60 * 1000
+
+        const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())
+        const end = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate())
+
+        if (end < start) 
+            return false
+
+        const durationInDays = Math.floor((end.getTime() - start.getTime()) / msPerDay) + 1
+
+        return ((durationInDays >= 1) && (durationInDays <= maxDurationInDays))
     }
 }
