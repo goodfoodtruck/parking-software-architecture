@@ -15,19 +15,29 @@ export interface UserData {
 interface UserState {
   user: UserData | null,
   status: 'pending' | 'fulfilled' | 'rejected',
-  isLoading: boolean
+  isLoading: boolean,
+  employees: UserData[]
 }
 
 const initialState: UserState = {
   user: null,
   status: 'fulfilled',
-  isLoading: false
+  isLoading: false,
+  employees: []
 }
 
 export const fetchCurrentUser = createAsyncThunk(
   'auth/fetchCurrentUser',
   async () => {
         const res = await UserService.getCurretUser();
+    return res.data;
+  }
+)
+
+export const getAllEmployees = createAsyncThunk(
+  'auth/getAllEmployees',
+  async () => {
+        const res = await UserService.getAllEmployees();
     return res.data;
   }
 )
@@ -61,6 +71,25 @@ const userSlice = createSlice({
         state.status = 'rejected'
         state.isLoading = false,
         state.user = null
+      })
+    builder
+      .addCase(getAllEmployees.pending, state => {
+        state.status = 'pending'
+        state.isLoading = true
+
+      })
+      .addCase(
+        getAllEmployees.fulfilled,
+        (state, action: PayloadAction<UserData[]>) => {
+          state.status = 'fulfilled'
+          state.employees = action.payload
+          state.isLoading = false
+        }
+      )
+      .addCase(getAllEmployees.rejected, (state) => {
+        state.status = 'rejected'
+        state.isLoading = false,
+        state.employees = []
       })
   },
 })
