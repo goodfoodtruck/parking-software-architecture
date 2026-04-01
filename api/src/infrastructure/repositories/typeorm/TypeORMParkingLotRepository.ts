@@ -9,4 +9,8 @@ export class TypeORMParkingLotRepository implements IParkingLotRepository {
     findById(id: number): Promise<ParkingLot | null> {
         return this.repository.findOneBy({ id })
     }
+
+    findAll(): Promise<ParkingLot[] | null> {
+        return this.repository.find();
+    }
 }

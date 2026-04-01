@@ -1,13 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import { EmployeeService } from "../services/Employee.service";
 import { AController } from "./AController";
+import { ReservationService } from "../services/Reservation.service";
 
 export class EmployeeController extends AController {
     constructor(
-        private readonly employeeService: EmployeeService
+        private readonly employeeService: EmployeeService,
+        private readonly reservationService: ReservationService
     ) {
         super()
         this.router.get("/", this.getEmployees)
+        this.router.patch("/:id/reservations/:reservationId", this.checkIn)
     }
 
     private getEmployees = async(req: Request, res: Response, next: NextFunction) => {
@@ -16,6 +19,19 @@ export class EmployeeController extends AController {
             return res.status(200).json(employees)
         }
         catch(error) {
+            next(error)
+        }
+    }
+
+    private checkIn = async(req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { id, reservationId } = req.params;
+            
+            await this.reservationService.checkIn(+reservationId, +id);
+
+            return res.status(204).send();
+        }
+        catch (error) {
             next(error)
         }
     }

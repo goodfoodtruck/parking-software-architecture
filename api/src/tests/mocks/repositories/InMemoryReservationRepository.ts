@@ -1,4 +1,3 @@
-import { ParkingLot } from "../../../entities/ParkingLot.entity"
 import { Reservation } from "../../../entities/Reservation.entity"
 import { IParkingLotReservationRepository } from "../../../repositories/IParkingLotReservationRepository"
 
@@ -14,6 +13,10 @@ export class InMemoryReservationRepository implements IParkingLotReservationRepo
     async findAll(): Promise<Reservation[]> {
         return this.reservations
     }
+    
+    async findById(id: number): Promise<Reservation | null> {
+        return this.reservations.find(r => r.id === id) || null;
+    }
 
     async save(reservation: Reservation): Promise<Reservation> {
         reservation.id = this.idCounter++
@@ -23,6 +26,13 @@ export class InMemoryReservationRepository implements IParkingLotReservationRepo
 
     async findByParkingLotId(id: number): Promise<Reservation | null> {
         return this.reservations.find(r => r.parkingLot.id === id) || null
+    }
+
+    async findCheckedInByParkingLotId(id: number): Promise<Reservation[]> {
+        return this.reservations.filter(r =>
+            r.parkingLot.id === id
+            && r.checkedIn === true
+        )
     }
 
     async isAvailable(parkingLotId: number, startDate: Date, endDate: Date): Promise<boolean> {

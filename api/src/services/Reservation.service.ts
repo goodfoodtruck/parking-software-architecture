@@ -1,4 +1,5 @@
 import { CreateReservationDTO } from "../dtos/in/CreateReservationDTO";
+import { ReservationDTO } from "../dtos/out/ReservationDTO";
 import { Reservation } from "../entities/Reservation.entity";
 import { publishReservationCreated } from "../producer";
 import { IEmployeeRepository } from "../repositories/IEmployeeRepository";
@@ -45,8 +46,36 @@ export class ReservationService {
         return createdReservation
     }
 
-    async isAvailable(parkingLotId: number, startDate: Date, endDate: Date): Promise<boolean> {
-        return this.reservationRepository.isAvailable(parkingLotId, startDate, endDate)
+    async isAvailable(parkingLotId: number, startDate?: Date, endDate?: Date): Promise<boolean> {
+        return this.reservationRepository.isAvailable(
+            parkingLotId,
+            startDate ? new Date(startDate) : new Date(Date.now()),
+            endDate ? new Date(endDate) : new Date(Date.now())
+        )
+    }
+
+    async getCheckedInByParkingLot(parkingLotId: number): Promise<ReservationDTO[]> {
+        const parkingLotReservations = await this.reservationRepository.findCheckedInByParkingLotId(parkingLotId);
+        
+        return parkingLotReservations.map(reservation => ({
+            startDate: reservation.startDate,
+            endDate: reservation.endDate
+        }));
+    } 
+
+    async checkIn(id: number, employeeId: number) {
+        const reservation = await this.reservationRepository.findById(id);
+
+        if (! reservation)
+            throw new Error(`ERROR: Reservation ${id} was not found.`);
+
+        if (employeeId !== reservation.employee.id) 
+            throw new Error("ERROR: The person doing to check in must be the same that reserved the parking lot.");
+
+        await this.reservationRepository.save({
+            ...reservation,
+            checkedIn: true
+        })
     }
 
     async checkInParkingLot(parkingLotId: number, checkInMakerId: number) {

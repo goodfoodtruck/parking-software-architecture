@@ -1,27 +1,29 @@
 import { ParkingLotDTO } from "../dtos/out/ParkingLotDTO";
 import { IParkingLotRepository } from "../repositories/IParkingLotRepository";
+import { ReservationService } from "./Reservation.service";
 
 export class ParkingLotService {
     constructor(
-        private readonly parkingLotRepository: IParkingLotRepository
+        private readonly parkingLotRepository: IParkingLotRepository,
+        private readonly reservationService: ReservationService
     ) {}
 
     async getAll(): Promise<ParkingLotDTO[]> {
+        const parkingLotsEntities = await this.parkingLotRepository.findAll();
+        if (! parkingLotsEntities || ! parkingLotsEntities.length)
+            throw new Error("ERROR: No parking lots were found.")
+
         const parkingLots: ParkingLotDTO[] = []
 
-        const rows = ["A", "B", "C", "D", "E", "F"];
-        const columns = 10;
-
-        rows.forEach((row, rowIndex) => {
-            for (let col = 1; col <= columns; col += 1) {
-                const number = String(col).padStart(2, '0');
-                const id = rowIndex * columns + col;
-                const name = `${row}${number}`;
-                const isElectric = row === "A" || row === "F";
-                const available = col % 3 !== 0;
-                parkingLots.push({ id, name, isElectric, available });
-            }
-        })
+        for (const parkingLot of parkingLotsEntities) {
+            const isAvailable = await this.reservationService.isAvailable(parkingLot.id);
+            parkingLots.push({
+                id: parkingLot.id,
+                name: parkingLot.name,
+                isElectric: parkingLot.electric,
+                available: isAvailable
+            });
+        }
 
         return parkingLots
     }
