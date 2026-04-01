@@ -8,6 +8,9 @@ const ReservationService = {
       `/reservations`,
       body
     );
+  },
+  getCheckedInByParkingLot(parkingLotId: number): Promise<AxiosResponse<IReservationPlace[]>> {
+    return axiosInstance.get<IReservationPlace[]>(`/reservations/parking-lots/${parkingLotId}`);
   }
 };
 

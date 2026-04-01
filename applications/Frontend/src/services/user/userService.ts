@@ -1,10 +1,11 @@
+import axiosInstance from '@/lib/axios';
 import { UserData } from '@/store/slices/userSlice';
 import { AxiosResponse } from 'axios';
 
 const UserService = {
   getCurretUser(): Promise<AxiosResponse<UserData>> {
     // return axiosInstance.get<UserData>(
-    //   `${process.env.NEXT_PUBLIC_BACK_URL}/me`
+    //   `/me`
     // );
 
     const mockedUserProfile: UserData = {
@@ -29,7 +30,7 @@ const UserService = {
 
   getAllEmployees(): Promise<AxiosResponse<UserData[]>> {
     // return axiosInstance.get<UserData[]>(
-    //   `${process.env.NEXT_PUBLIC_BACK_URL}/employees`
+    //   '/employees'
     // );
 
     const mockedEmployees: UserData[] = [
@@ -54,7 +55,13 @@ const UserService = {
       headers: {},
       config: {} as any,
     } as AxiosResponse<UserData[]>);  
-  }
+  },
+
+  checkIn (id: number, reservationId: number): Promise<AxiosResponse<void>> {
+    return axiosInstance.post(
+      `/employees/${id}/reservations/${reservationId}`
+    );
+  },
 };
 
 export default UserService;

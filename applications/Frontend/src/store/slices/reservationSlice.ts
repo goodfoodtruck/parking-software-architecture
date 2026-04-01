@@ -37,6 +37,14 @@ export const reserveParkingPlace = createAsyncThunk(
   }
 )
 
+export const getCheckedInByParkingLot = createAsyncThunk(
+  'reservation/getCheckedInByParkingLot',
+  async (parkingLotId: number) => {
+    const res = await ReservationService.getCheckedInByParkingLot(parkingLotId);
+    return res.data;
+  }
+)
+
 const reservationSlice = createSlice({
   name: 'reservation',
   initialState,
@@ -67,6 +75,25 @@ const reservationSlice = createSlice({
         state.isLoading = false,
         state.parkingPlace = null
       })
+    builder
+      .addCase(getCheckedInByParkingLot.pending, state => {
+        state.status = 'pending'
+        state.isLoading = true
+
+      })
+      .addCase(
+        getCheckedInByParkingLot.fulfilled,
+        (state, action: PayloadAction<IReservationPlace[]>) => {
+          state.status = 'fulfilled'
+          state.parkingPlace = action.payload[0] || null
+          state.isLoading = false
+        }
+      )
+      .addCase(getCheckedInByParkingLot.rejected, (state) => {
+        state.status = 'rejected'
+        state.isLoading = false,
+        state.parkingPlace = null
+      })  
   },
 })
 

@@ -42,6 +42,15 @@ export const getAllEmployees = createAsyncThunk(
   }
 )
 
+export const checkIn = createAsyncThunk(
+  'auth/checkIn',
+  async (args: { id: number; reservationId: number }) => {
+    const res = await UserService.checkIn(args.id, args.reservationId);
+    return res.data;
+  }
+)
+
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -91,6 +100,26 @@ const userSlice = createSlice({
         state.isLoading = false,
         state.employees = []
       })
+    builder
+      .addCase(checkIn.pending, state => {
+        state.status = 'pending'
+        state.isLoading = true
+
+      })
+      .addCase(
+        checkIn.fulfilled,
+        (state) => {
+          state.status = 'fulfilled'
+          if (state.user) {
+            state.user.parked = true;
+          }
+          state.isLoading = false
+      })
+      .addCase(checkIn.rejected, (state) => {
+        state.status = 'rejected'
+        state.isLoading = false
+        // Optionally, you could set an error message here
+      })   
   },
 })
 
