@@ -43,6 +43,16 @@ export class ReservationService {
 
         const createdReservation = await this.reservationRepository.save(reservation)
 
+        const emailParams = {
+            recipient: createdReservation.employee.email,
+            reservationId: createdReservation.id.toString(),
+            date: new Intl.DateTimeFormat(
+                "fr-FR", { day: "numeric", month: "long", year: "numeric" }
+            ).format(createdReservation.startDate)
+        }
+        
+        await publishReservationCreated(emailParams)
+
         return createdReservation
     }
 
