@@ -16,6 +16,13 @@ const HomeApp = () => {
 
   const selectedLot = parkingLots.find((lot) => lot.id === selectedLotId) ?? null;
   const isElectricUser = userProfile?.electric ?? false;
+  const [reservationDate, setReservationDate] = useState<string>('');
+  const today = new Date().toISOString().split('T')[0];
+
+  const handleReservation = () => {
+
+    console.log('coucou', reservationDate);
+  };
 
   const lotByName = useMemo(() => {
     const map = new Map<string, parkingPlacesData>();
@@ -35,41 +42,30 @@ const HomeApp = () => {
             <p className="mt-3 max-w-2xl text-slate-100">
               Consultez les places compatibles avec votre véhicule.
             </p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <label className="flex flex-col gap-2 text-sm text-slate-100">
+                Date de réservation
+                <input
+                  type="date"
+                  value={reservationDate}
+                  min={today}
+                  onChange={(event) => setReservationDate(event.target.value)}
+                  className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-slate-900"
+                />
+              </label>
+              <button
+                type="button"
+                onClick={handleReservation}
+                className="rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
+              >
+                Réserver une place de parking
+              </button>
+            </div>
           </div>
 
         {userProfile ? (
             <>
           <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-            <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-              <h2 className="text-xl font-semibold text-slate-800">Profil utilisateur</h2>
-              <div className="mt-4 grid gap-3 text-sm text-slate-700">
-                <div className="flex justify-between rounded-2xl bg-white px-4 py-3 shadow-sm">
-                  <span>Nom</span>
-                  <span>{userProfile.lastName}</span>
-                </div>
-                <div className="flex justify-between rounded-2xl bg-white px-4 py-3 shadow-sm">
-                  <span>Prénom</span>
-                  <span>{userProfile.firstName}</span>
-                </div>
-                <div className="flex justify-between rounded-2xl bg-white px-4 py-3 shadow-sm">
-                  <span>Téléphone</span>
-                  <span>{userProfile.phone}</span>
-                </div>
-                <div className="flex justify-between rounded-2xl bg-white px-4 py-3 shadow-sm">
-                  <span>Email</span>
-                  <span>{userProfile.email}</span>
-                </div>
-                <div className="flex justify-between rounded-2xl bg-white px-4 py-3 shadow-sm">
-                  <span>Automobile</span>
-                  <span>{userProfile.automobile}</span>
-                </div>
-                <div className="flex justify-between rounded-2xl bg-white px-4 py-3 shadow-sm">
-                  <span>Type</span>
-                  <span>{userProfile.electric ? 'Électrique' : 'Non électrique'}</span>
-                </div>
-              </div>
-            </section>
-
             <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
               <h2 className="text-xl font-semibold text-slate-800">Place sélectionnée</h2>
               <div className="mt-4 rounded-3xl bg-white p-5 shadow-sm">

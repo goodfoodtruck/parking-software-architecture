@@ -1,4 +1,3 @@
-import { ParkingLot } from "../pages/profil/types";
 
 type Props = {
   selectedLot: ParkingLot | null;

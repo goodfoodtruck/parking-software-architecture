@@ -1,5 +1,5 @@
 import { ChangeEvent } from 'react';
-import { UserCreation } from '../App';
+import { UserCreation } from '../../pages/resources/App';
 
 interface EmployeeModalProps {
   open: boolean;

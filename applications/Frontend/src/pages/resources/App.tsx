@@ -1,8 +1,8 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { getAllEmployees, type UserData } from "@/store/slices/userSlice";
-import EmployeeTable from "./components/EmployeeTable";
-import EmployeeModal from "./components/EmployeeModal";
+import { createEmployee, getAllEmployees, type UserData } from "@/store/slices/userSlice";
+import EmployeeTable from "../../components/ressources/EmployeeTable";
+import EmployeeModal from "../../components/ressources/EmployeeModal";
 
 export interface UserCreation {
   firstName: string;
@@ -93,30 +93,7 @@ const SecretaryApp = () => {
     setFeedback(null);
 
     try {
-      const response = await fetch('/user/createuser', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(creationForm),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Impossible de créer l’utilisateur');
-      }
-
-      const createdUser = await response.json();
-      const newEmployee: UserData = {
-        id: createdUser.id ?? Date.now(),
-        firstName: createdUser.firstName || creationForm.firstName,
-        lastName: createdUser.lastName || creationForm.lastName,
-        email: createdUser.email || creationForm.email,
-        phone: createdUser.phone || creationForm.phone,
-        automobile: createdUser.automobile || creationForm.automobile,
-        electric: createdUser.electric ?? creationForm.electric,
-        parked: createdUser.parked ?? false,
-      };
-
-      setEmployees((current) => [newEmployee, ...current]);
+      await dispatch(createEmployee(creationForm)).unwrap();
       setFeedback('Utilisateur créé avec succès.');
       setTimeout(() => closeModal(), 800);
     } catch (error) {

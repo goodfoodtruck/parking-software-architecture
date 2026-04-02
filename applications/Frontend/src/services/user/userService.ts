@@ -1,6 +1,8 @@
 import axiosInstance from '@/lib/axios';
+import { UserCreation } from '@/pages/resources/App';
 import { UserData } from '@/store/slices/userSlice';
 import { AxiosResponse } from 'axios';
+import { create } from 'node:domain';
 
 const UserService = {
   getCurretUser(): Promise<AxiosResponse<UserData>> {
@@ -16,7 +18,7 @@ const UserService = {
       email: "doe.john@gmail.com",
       automobile: "Tesla Model 3",
       electric: true,
-      parked: false,
+      role: 'EMPLOYEE'
     };
 
     return Promise.resolve({
@@ -29,32 +31,9 @@ const UserService = {
   },
 
   getAllEmployees(): Promise<AxiosResponse<UserData[]>> {
-    // return axiosInstance.get<UserData[]>(
-    //   '/employees'
-    // );
-
-    const mockedEmployees: UserData[] = [
-      {
-        id: 1, firstName: "Marie", lastName: "Durand", email: "marie.durand@example.com", phone: "+33 6 12 34 56 78", automobile: "Renault Clio", electric: false,
-        parked: false
-      },
-      {
-        id: 2, firstName: "Paul", lastName: "Martin", email: "paul.martin@example.com", phone: "+33 6 23 45 67 89", automobile: "Tesla Model 3", electric: true,
-        parked: false
-      },
-      {
-        id: 3, firstName: "Lucie", lastName: "Moreau", email: "lucie.moreau@example.com", phone: "+33 6 34 56 78 90", automobile: "Peugeot 208", electric: false,
-        parked: false
-      },
-    ];
-
-    return Promise.resolve({
-      data: mockedEmployees,
-      status: 200,
-      statusText: 'OK',
-      headers: {},
-      config: {} as any,
-    } as AxiosResponse<UserData[]>);  
+    return axiosInstance.get<UserData[]>(
+      '/employees'
+    );
   },
 
   checkIn (id: number, reservationId: number): Promise<AxiosResponse<void>> {
@@ -62,6 +41,13 @@ const UserService = {
       `/employees/${id}/reservations/${reservationId}`
     );
   },
+
+  createEmployee(employeeData: UserCreation): Promise<AxiosResponse<UserData>> {
+    return axiosInstance.post<UserData>(
+      '/employees/createUser',
+      employeeData
+    );
+  }
 };
 
 export default UserService;
