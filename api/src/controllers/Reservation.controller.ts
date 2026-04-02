@@ -41,17 +41,4 @@ export class ReservationController extends AController {
             next(error)
         }
     }
-
-    private getCheckedInByParkingLot = async(req: Request, res: Response, next: NextFunction) => {
-        try {
-            const { id } = req.params;
-
-            const reservations = await this.reservationService.getCheckedInByParkingLot(+id);
-
-            return res.status(200).json(reservations);
-
-        } catch (error) {
-            next(error)
-        }
-    }
 }
