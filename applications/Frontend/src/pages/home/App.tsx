@@ -24,7 +24,7 @@ const HomeApp = () => {
         return <div>Vous devez être connecté</div>
     }
 
-    const isUserManager = true
+    const isUserManager = userProfile.role === "MANAGER"
 
     return (
         <div className="flex flex-col gap-6 p-6">

@@ -28,8 +28,6 @@ const ManagerDashboard: React.FC = () => {
     }, [dispatch])
 
     if (! metrics || ! metrics.last30DaysNbReservations || isLoading) {
-        console.log(isLoading);
-        console.log(metrics);
         return <div>loading metrics...</div>
     }
 

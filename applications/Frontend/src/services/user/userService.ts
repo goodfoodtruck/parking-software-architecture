@@ -2,7 +2,6 @@ import axiosInstance from '@/lib/axios';
 import { UserCreation } from '@/pages/resources/App';
 import { UserData } from '@/store/slices/userSlice';
 import { AxiosResponse } from 'axios';
-import { create } from 'node:domain';
 
 const UserService = {
   getCurretUser(): Promise<AxiosResponse<UserData>> {
@@ -18,7 +17,7 @@ const UserService = {
       email: "doe.john@gmail.com",
       automobile: "Tesla Model 3",
       electric: true,
-      role: 'EMPLOYEE'
+      role: "MANAGER"
     };
 
     return Promise.resolve({
