@@ -1,3 +1,4 @@
+import { UserCreation } from '@/pages/resources/App';
 import UserService from '@/services/user/userService'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
@@ -9,7 +10,7 @@ export interface UserData {
   email: string;
   automobile: string;
   electric: boolean;
-  parked: boolean;
+  role: 'EMPLOYEE' | 'MANAGER' | 'SECRETARY';
 }
 
 interface UserState {
@@ -46,6 +47,14 @@ export const checkIn = createAsyncThunk(
   'auth/checkIn',
   async (args: { id: number; reservationId: number }) => {
     const res = await UserService.checkIn(args.id, args.reservationId);
+    return res.data;
+  }
+)
+
+export const createEmployee = createAsyncThunk(
+  'auth/createEmployee',
+  async (employeeData: UserCreation) => {
+    const res = await UserService.createEmployee(employeeData);
     return res.data;
   }
 )
@@ -110,9 +119,6 @@ const userSlice = createSlice({
         checkIn.fulfilled,
         (state) => {
           state.status = 'fulfilled'
-          if (state.user) {
-            state.user.parked = true;
-          }
           state.isLoading = false
       })
       .addCase(checkIn.rejected, (state) => {
@@ -120,6 +126,23 @@ const userSlice = createSlice({
         state.isLoading = false
         // Optionally, you could set an error message here
       })   
+    builder
+      .addCase(createEmployee.pending, state => {
+        state.status = 'pending'
+        state.isLoading = true
+
+      })
+      .addCase(
+        createEmployee.fulfilled,
+        (state, action: PayloadAction<UserData>) => {
+          state.status = 'fulfilled'
+          state.isLoading = false
+          state.employees.unshift(action.payload)
+      })
+      .addCase(createEmployee.rejected, (state) => {
+        state.status = 'rejected'
+        state.isLoading = false
+      })
   },
 })
 

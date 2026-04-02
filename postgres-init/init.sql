@@ -1,7 +1,16 @@
 -- table des employés
 CREATE TABLE employee (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phone VARCHAR(10),
+    automobile VARCHAR(20) NOT NULL,
+    electric BOOLEAN NOT NULL DEFAULT false,
+    parked BOOLEAN NOT NULL DEFAULT false,
+    role VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 -- table des parkings
@@ -22,10 +31,10 @@ CREATE TABLE reservation (
 );
 
 -- insérer les employés
-INSERT INTO employee (name) VALUES
-  ('Alice'),
-  ('Bob'),
-  ('Charlie');
+INSERT INTO employee (first_name, last_name, email, phone, automobile, electric, parked, role) VALUES
+  ('Alice', 'Smith', 'alice.smith@example.com', '123456789', 'Toyota Camry', false, false, 'EMPLOYEE'),
+  ('Bob', 'Johnson', 'bob.johnson@example.com', '987654321', 'Honda Civic', true, false, 'MANAGER'),
+  ('Charlie', 'Brown', 'charlie.brown@example.com', '555555555', 'Ford Mustang', false, false, 'SECRETARY');
 
 -- insérer les parkings
 INSERT INTO parking_lot (name, electric)
