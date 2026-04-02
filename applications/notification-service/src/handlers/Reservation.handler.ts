@@ -5,9 +5,11 @@ export class ReservationHandler {
 
     async handle(message: Record<string, string>): Promise<void> {
         await this.notificationService.sendReservationConfirmation({
-            mailRecipient: message.recipient,
-            reservationId: message.reservationId,
-            date: message.date,
+            email: message.email,
+            lastName: message.lastName,
+            firstName: message.firstName,
+            startDate: message.startDate,
+            endDate: message.endDate
         })
     }
 }

@@ -1,10 +1,11 @@
 import { CreateReservationDTO } from "../dtos/in/CreateReservationDTO";
-import { ReservationDTO } from "../dtos/out/ReservationDTO";
+import { ReservationDateDTO } from "../dtos/out/ReservationDateDTO";
 import { Reservation } from "../entities/Reservation.entity";
 import { publishReservationCreated } from "../producer";
 import { IEmployeeRepository } from "../repositories/IEmployeeRepository";
 import { IParkingLotRepository } from "../repositories/IParkingLotRepository";
 import { IParkingLotReservationRepository } from "../repositories/IParkingLotReservationRepository";
+import { getDatesBetween } from "../utils/dates/getDatesBetween.utils";
 
 export class ReservationService {
 
@@ -33,44 +34,51 @@ export class ReservationService {
         const available = await this.isAvailable(parkingLot.id, startDate, endDate)
         if (! available) 
             throw new Error("ERROR: Parking lot is not available.")
-        
-        const reservation = new Reservation()
-        reservation.employee = employee
-        reservation.parkingLot = parkingLot
-        reservation.startDate = startDate
-        reservation.endDate = endDate
-        reservation.checkedIn = false
 
-        const createdReservation = await this.reservationRepository.save(reservation)
+        const dates = getDatesBetween(startDate, endDate)
+
+        const createdReservations: Reservation[] = []
+
+        for (const date of dates) {
+            const reservation = new Reservation()
+            reservation.employee = employee
+            reservation.parkingLot = parkingLot
+            reservation.date = date
+            reservation.checkedIn = false
+
+            const created = await this.reservationRepository.save(reservation)
+            createdReservations.push(created)
+        }
 
         const emailParams = {
-            recipient: createdReservation.employee.email,
-            reservationId: createdReservation.id.toString(),
-            date: new Intl.DateTimeFormat(
-                "fr-FR", { day: "numeric", month: "long", year: "numeric" }
-            ).format(createdReservation.startDate)
+            email: createdReservations[0].employee.email,
+            lastName: createdReservations[0].employee.lastName,
+            firstName: createdReservations[0].employee.firstName,
+            startDate: new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric" }).format(startDate),
+            endDate: new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric" }).format(endDate)
         }
         
         await publishReservationCreated(emailParams)
 
-        return createdReservation
+        return createdReservations
     }
 
     async isAvailable(parkingLotId: number, startDate?: Date, endDate?: Date): Promise<boolean> {
-        return this.reservationRepository.isAvailable(
-            parkingLotId,
+        const dates = getDatesBetween(
             startDate ? new Date(startDate) : new Date(Date.now()),
             endDate ? new Date(endDate) : new Date(Date.now())
         )
+        
+        return this.reservationRepository.isAvailable(parkingLotId, dates)
     }
 
-    async getCheckedInByParkingLot(parkingLotId: number): Promise<ReservationDTO[]> {
+    async getCheckedInByParkingLot(parkingLotId: number): Promise<ReservationDateDTO[]> {
         const parkingLotReservations = await this.reservationRepository.findCheckedInByParkingLotId(parkingLotId);
-        
-        return parkingLotReservations.map(reservation => ({
-            startDate: reservation.startDate,
-            endDate: reservation.endDate
+        const reservationsDateDto: ReservationDateDTO[] = parkingLotReservations.map(reservation => ({
+            date: reservation.date
         }));
+        
+        return reservationsDateDto;
     } 
 
     async checkIn(id: number, employeeId: number) {

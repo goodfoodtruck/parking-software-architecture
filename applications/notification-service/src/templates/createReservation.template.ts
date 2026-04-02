@@ -7,11 +7,13 @@ export function buildReservationTemplate(payload: ReservationConfirmationPayload
     let html = fs.readFileSync(filePath, "utf-8")
 
     html = html
-        .replace("{{reservationId}}", payload.reservationId)
-        .replace("{{date}}", payload.date)
+        .replace("{{lastName}}", payload.lastName)
+        .replace("{{firstName}}", payload.firstName)
+        .replace("{{startDate}}", payload.startDate)
+        .replace("{{endDate}}", payload.endDate)
 
     return {
-        subject: `Confirmation de réservation #${payload.reservationId}`,
+        subject: `Confirmation de votre réservation ${payload.firstName} ${payload.lastName}`,
         html
     }
 }

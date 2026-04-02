@@ -25,8 +25,7 @@ CREATE TABLE reservation (
     id SERIAL PRIMARY KEY,
     employee_id INT NOT NULL REFERENCES employee(id) ON DELETE CASCADE,
     parking_lot_id INT NOT NULL REFERENCES parking_lot(id) ON DELETE CASCADE,
-    start_date TIMESTAMP NOT NULL,
-    end_date TIMESTAMP NOT NULL,
+    date TIMESTAMP NOT NULL,
     checked_in BOOLEAN NOT NULL DEFAULT false
 );
 
@@ -51,5 +50,5 @@ FROM (
 
 -- insérer les réservations
 INSERT INTO reservation (employee_id, parking_lot_id, start_date, end_date, checked_in) VALUES
-  ((SELECT id FROM employee WHERE name='Alice'), (SELECT id FROM parking_lot WHERE name='A01'), NOW(), NOW() + interval '1 hour', false),
-  ((SELECT id FROM employee WHERE name='Bob'),   (SELECT id FROM parking_lot WHERE name='B01'), NOW(), NOW() + interval '2 hour', true);
+  ((SELECT id FROM employee WHERE name='Alice'), (SELECT id FROM parking_lot WHERE name='A01'), NOW(), false),
+  ((SELECT id FROM employee WHERE name='Bob'),   (SELECT id FROM parking_lot WHERE name='B01'), NOW(), true);

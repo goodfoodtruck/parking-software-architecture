@@ -2,9 +2,11 @@ import { EmailService } from "../services/Email.service"
 import { buildReservationTemplate } from "../templates/createReservation.template"
 
 export interface ReservationConfirmationPayload {
-    mailRecipient: string
-    reservationId: string
-    date: string
+    email: string,
+    lastName: string,
+    firstName: string,
+    startDate: string,
+    endDate: string
 }
 
 export class NotificationService {
@@ -12,6 +14,6 @@ export class NotificationService {
 
     async sendReservationConfirmation(payload: ReservationConfirmationPayload): Promise<void> {
         const { subject, html } = buildReservationTemplate(payload)
-        await this.emailService.send({ to: payload.mailRecipient, subject, html })
+        await this.emailService.send({ to: payload.email, subject, html })
     }
 }

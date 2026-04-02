@@ -3,7 +3,12 @@
     <tr>
       <td align="center">
         <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; padding:30px; border-radius:8px;">
-          
+          <tr>
+            <td align="center">
+              <h2 style="margin:0; color:#333;">Bonjour {{firstName}} {{lastName}} !</h2>
+            </td>
+          </tr>
+
           <tr>
             <td align="center">
               <h2 style="margin:0; color:#333;">Votre réservation est confirmée</h2>
@@ -15,12 +20,8 @@
             <td style="padding:20px 0;">
               <table width="100%" cellpadding="10" cellspacing="0" style="background:#f9f9f9; border-radius:6px;">
                 <tr>
-                  <td><strong>Numéro de réservation :</strong></td>
-                  <td align="right">#{{reservationId}}</td>
-                </tr>
-                <tr>
-                  <td><strong>Date :</strong></td>
-                  <td align="right">{{date}}</td>
+                  <td><strong>Dates de réservations :</strong></td>
+                  <td align="right">{{startDate}} - {{endDate}}</td>
                 </tr>
               </table>
             </td>
