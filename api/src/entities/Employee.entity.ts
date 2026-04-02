@@ -18,6 +18,9 @@ export class Employee {
   @Column({ type: "varchar", length: 255 })
   phone: string;
 
+  @Column({ type: "varchar", length: 255, nullable: false })
+  password: string 
+
   @Column({ type: "varchar" })
   automobile: string;
 
@@ -35,6 +38,7 @@ export class Employee {
     lastName: string,
     email: string,
     phone: string,
+    password: string,
     automobile: string,
     electric: boolean,
     role: string
@@ -44,6 +48,7 @@ export class Employee {
     this.lastName = lastName;
     this.email = email;
     this.phone = phone;
+    this.password = password;
     this.automobile = automobile;
     this.electric = electric;
     this.role = role;

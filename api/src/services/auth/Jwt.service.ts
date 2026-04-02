@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken"
 
 export class JwtService {
 
-    generateAccessToken(userId: string, secret: string): string {
+    generateAccessToken(userId: number, secret: string): string {
         return jwt.sign(
             { userId },
             secret,

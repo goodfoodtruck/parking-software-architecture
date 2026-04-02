@@ -3,6 +3,9 @@ import { Employee } from "../../../entities/Employee.entity";
 import { IEmployeeRepository } from "../../../repositories/IEmployeeRepository";
 
 export class TypeORMEmployeeRepository implements IEmployeeRepository {
+    findByEmail(email: string): Promise<Employee | null> {
+        throw new Error("Method not implemented.");
+    }
 
     private readonly repository = AppDataSource.getRepository(Employee)
         

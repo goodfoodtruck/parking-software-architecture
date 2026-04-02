@@ -1,3 +1,4 @@
+import { hash } from "bcrypt";
 import { CreateEmployeeDTO } from "../dtos/in/CreateEmployeeDTO";
 import { Employee } from "../entities/Employee.entity";
 import { IEmployeeRepository } from "../repositories/IEmployeeRepository";
@@ -18,7 +19,8 @@ export class EmployeeService {
     }
 
     async createEmployee(employee: CreateEmployeeDTO): Promise<Employee> {
-        const newEmployee = new Employee(employee.firstName, employee.lastName, employee.email, employee.phone, employee.automobile, employee.electric, 'EMPLOYEE');
+        const hashedPassword = await hash('Password123*', 10)
+        const newEmployee = new Employee(employee.firstName, employee.lastName, employee.email, employee.phone, hashedPassword, employee.automobile, employee.electric, 'EMPLOYEE');
 
         const createdEmployee = await this.employeeRepository.save(newEmployee);
         return createdEmployee;

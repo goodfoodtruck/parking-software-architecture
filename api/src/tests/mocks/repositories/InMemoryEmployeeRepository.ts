@@ -24,4 +24,8 @@ export class InMemoryEmployeeRepository implements IEmployeeRepository {
         this.employees.push(employee)
         return employee
     }
+
+    async findByEmail(email: string): Promise<Employee | null> {
+        return this.employees.find(e => e.email === email) || null
+    }
 }
