@@ -28,6 +28,10 @@ const HomeApp = () => {
 
     return (
         <div className="flex flex-col gap-6 p-6">
+            <h1 className="text-2xl font-semibold text-center text-slate-800">
+                Réserver ma place de parking
+            </h1>
+
             <DateRangePicker 
                 onChange={setDateRange} 
                 maxRangeInDays={isUserManager ? 30 : 5} 

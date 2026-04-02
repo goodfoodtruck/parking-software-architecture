@@ -30,7 +30,7 @@ const ParkingLotCell: React.FC<ParkingLotCellProps> = ({
                 ${disabled
                     ? "cursor-not-allowed border-slate-200 bg-slate-200 text-slate-500"
                     : "border-slate-200 bg-white text-slate-800 hover:border-slate-400"}
-                ${isSelected ? "ring-2 ring-sky-500" : ""}
+                ${isSelected ? "ring-2 ring-emerald-500" : ""}
             `}
         >
             <div>{name}</div>
