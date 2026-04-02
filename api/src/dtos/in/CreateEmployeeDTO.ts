@@ -3,6 +3,6 @@ export interface CreateEmployeeDTO {
     lastName: string
     email: string
     phone: string
-    automobile: boolean
+    automobile: string
     electric: boolean
 }

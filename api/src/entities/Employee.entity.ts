@@ -18,8 +18,8 @@ export class Employee {
   @Column({ type: "varchar", length: 255 })
   phone: string;
 
-  @Column({ type: "boolean" })
-  automobile: boolean;
+  @Column({ type: "varchar" })
+  automobile: string;
 
   @Column({ type: "boolean" })
   electric: boolean;
@@ -35,7 +35,7 @@ export class Employee {
     lastName: string,
     email: string,
     phone: string,
-    automobile: boolean,
+    automobile: string,
     electric: boolean,
     role: string
 

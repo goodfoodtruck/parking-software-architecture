@@ -4,7 +4,7 @@ export interface EmployeeDTO {
     lastName: string
     email: string
     phone?: string
-    automobile: boolean
+    automobile: string
     electric: boolean
     role: 'EMPLOYEE' | 'MANAGER' | 'SECRETARY'
 }

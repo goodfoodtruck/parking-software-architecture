@@ -3,6 +3,7 @@ import LoginApp from "./pages/authentification/App";
 import ProfileApp from "./pages/profile/App";
 import HomeApp from "./pages/home/App";
 import ManagerDashboard from "./pages/dashboard/ManagerDashboard";
+import SecretaryApp from "./pages/resources/App";
 
 function App() {
   return (
