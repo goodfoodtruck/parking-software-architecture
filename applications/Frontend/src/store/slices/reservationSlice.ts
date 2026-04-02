@@ -2,9 +2,9 @@ import ReservationService from '@/services/reservation/reservationService'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface IReservationPlaceBody {
-    employeeId: string, 
-    parkingLotId: string, 
-    startDate: Date, 
+    employeeId: number
+    parkingLotId: number 
+    startDate: Date
     endDate: Date
 }
 

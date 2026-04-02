@@ -3,10 +3,10 @@ import SelectedLotCard from "./selected-lot-card/SelectedLotCard"
 
 interface SelectedLotSectionProps {
     selectedLot: IParkingLotData | null
-    isUserManager: boolean
+    selectedDateRange: { start: string; end: string }
 }
 
-const SelectedLotSection: React.FC<SelectedLotSectionProps> = ({ selectedLot }) => {
+const SelectedLotSection: React.FC<SelectedLotSectionProps> = ({ selectedLot, selectedDateRange }) => {
     if (! selectedLot) return null
 
     return (
@@ -15,7 +15,7 @@ const SelectedLotSection: React.FC<SelectedLotSectionProps> = ({ selectedLot }) 
                 <h2 className="text-xl font-semibold text-slate-800">
                     Place sélectionnée
                 </h2>
-                <SelectedLotCard lot={selectedLot} />
+                <SelectedLotCard lot={selectedLot} selectedDateRange={selectedDateRange}/>
             </section>
         </div>
     )

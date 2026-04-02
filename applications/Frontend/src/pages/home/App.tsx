@@ -24,17 +24,20 @@ const HomeApp = () => {
         return <div>Vous devez être connecté</div>
     }
 
-    const isUserManager = userProfile.role === "MANAGER"
+    const isUserManager = true
 
     return (
         <div className="flex flex-col gap-6 p-6">
-            <DateRangePicker onChange={setDateRange} maxRangeInDays={isUserManager ? 30 : 5} />
+            <DateRangePicker 
+                onChange={setDateRange} 
+                maxRangeInDays={isUserManager ? 30 : 5} 
+                isManager={isUserManager}
+            />
 
             {dateRange && (
                 <ParkingAvailabilitySection
                     parkingLots={parkingLots}
-                    isElectricUser={userProfile.electric}
-                    isUserManager={isUserManager}
+                    isElectricCarUser={userProfile.electric}
                     dateRange={dateRange}
                 />
             )}

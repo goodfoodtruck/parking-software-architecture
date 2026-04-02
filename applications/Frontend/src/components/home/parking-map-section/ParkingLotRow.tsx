@@ -6,7 +6,7 @@ interface ParkingLotRowProps {
     columns: number[]
     lotByName: Map<string, IParkingLotData>
     selectedLotId: number | null
-    isElectricUser: boolean
+    isElectricCarUser: boolean
     onSelect: (id: number | null) => void
 }
 
@@ -15,7 +15,7 @@ const ParkingLotRow: React.FC<ParkingLotRowProps> = ({
     columns,
     lotByName,
     selectedLotId,
-    isElectricUser,
+    isElectricCarUser,
     onSelect
 }) => {
     return (
@@ -32,7 +32,7 @@ const ParkingLotRow: React.FC<ParkingLotRowProps> = ({
                         name={name}
                         lot={lot}
                         isSelected={selectedLotId === lot?.id}
-                        isElectricUser={isElectricUser}
+                        isElectricCarUser={isElectricCarUser}
                         onSelect={onSelect}
                     />
                 )

@@ -4,56 +4,50 @@ import { format } from "date-fns"
 interface Props {
     range: DateRange | undefined
     error: string | null
-    maxRangeInDays: number
     onReset: () => void
 }
 
 const getDiffInDays = (from: Date, to: Date) => {
-    const diff = to.getTime() - from.getTime()
-    return Math.ceil(diff / (1000 * 60 * 60 * 24))
+    const millisecondsPerDay = 1000 * 60 * 60 * 24
+    return Math.ceil((to.getTime() - from.getTime()) / millisecondsPerDay)
 }
 
-const DateRangeSummary: React.FC<Props> = ({
-    range,
-    error,
-    onReset
-}) => {
+const DateRangeSummary: React.FC<Props> = ({ range, error, onReset }) => {
+    if (!range?.from) {
+        return (
+            <p className="text-sm text-slate-400">
+                Aucune période sélectionnée
+            </p>
+        )
+    }
+
+    const startDate = format(range.from, "dd/MM/yyyy")
+    const endDate = range.to ? format(range.to, "dd/MM/yyyy") : null
+    const duration = range.to ? getDiffInDays(range.from, range.to) + 1 : null
+
     return (
-        <div className="rounded-2xl border bg-white p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-slate-700 mb-2">
-                Période sélectionnée
-            </h3>
+        <div className="flex items-center justify-between text-sm gap-4">
+            <div className="text-slate-700">
+                {endDate ? (
+                    <>
+                        {startDate} → {endDate} •{" "}
+                        <span className="font-medium">{duration} jours</span>
+                    </>
+                ) : (
+                    <>Début : {startDate}</>
+                )}
+            </div>
 
-            {!range?.from && (
-                <p className="text-sm text-slate-400"> Aucune date sélectionnée </p>
-            )}
+            <div className="flex items-center gap-3">
+                {error && <span className="text-red-500 text-xs">{error}</span>}
 
-            {range?.from && !range?.to && (
-                <p className="text-sm text-slate-500">
-                    Début : {format(range.from, "dd/MM/yyyy")}
-                </p>
-            )}
-
-            {range?.from && range?.to && (
-                <div className="text-sm text-slate-700 space-y-1">
-                    <p>Du {format(range.from, "dd/MM/yyyy")}</p>
-                    <p>Au {format(range.to, "dd/MM/yyyy")}</p>
-                    <p className="text-xs text-slate-400">
-                        {getDiffInDays(range.from, range.to) + 1} jour(s)
-                    </p>
-                </div>
-            )}
-
-            {error && <p className="text-sm text-red-500 mt-2"> {error} </p> }
-
-            {range && (
                 <button
                     onClick={onReset}
-                    className="mt-3 text-xs text-blue-600 hover:underline"
+                    className="text-xs text-blue-600 hover:underline"
                 >
                     Réinitialiser
                 </button>
-            )}
+            </div>
         </div>
     )
 }

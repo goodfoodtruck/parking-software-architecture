@@ -10,12 +10,17 @@ export class ParkingLotController extends AController {
         this.router.get("/", this.getParkingLots)
     }
 
-    private getParkingLots = async(req: Request, res: Response, next: NextFunction) => {
+    private getParkingLots = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const parkingLots = await this.parkingLotService.getAll()
+            const { startDate, endDate } = req.query
+
+            const parkingLots = await this.parkingLotService.getParkingLots(
+                startDate ? new Date(startDate as string) : undefined,
+                endDate ? new Date(endDate as string) : undefined
+            )
+
             return res.status(200).json(parkingLots)
-        }
-        catch(error) {
+        } catch (error) {
             next(error)
         }
     }

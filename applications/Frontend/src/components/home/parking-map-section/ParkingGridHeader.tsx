@@ -1,8 +1,8 @@
 interface ParkingGridHeaderProps {
-    isElectricUser: boolean
+    isElectricCarUser: boolean
 }
 
-const ParkingGridHeader: React.FC<ParkingGridHeaderProps> = ({ isElectricUser }) => {
+const ParkingGridHeader: React.FC<ParkingGridHeaderProps> = ({ isElectricCarUser }) => {
     return (
         <div className="flex flex-wrap gap-3">
             <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-sm">
@@ -15,7 +15,7 @@ const ParkingGridHeader: React.FC<ParkingGridHeaderProps> = ({ isElectricUser })
                 Électrique
             </span>
 
-            {!isElectricUser && (
+            {!isElectricCarUser && (
                 <span className="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-sm">
                     Pas compatible
                 </span>

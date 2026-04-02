@@ -4,7 +4,7 @@ interface ParkingLotCellProps {
     name: string
     lot: IParkingLotData
     isSelected: boolean
-    isElectricUser: boolean
+    isElectricCarUser: boolean
     onSelect: (id: number | null) => void
 }
 
@@ -12,13 +12,13 @@ const ParkingLotCell: React.FC<ParkingLotCellProps> = ({
     name,
     lot,
     isSelected,
-    isElectricUser,
+    isElectricCarUser,
     onSelect
 }) => {
     const available = lot.available ?? false
     const electric = lot.isElectric ?? false
 
-    const nonCompatible = !isElectricUser && electric
+    const nonCompatible = !isElectricCarUser && electric
     const disabled = !available || nonCompatible
 
     return (

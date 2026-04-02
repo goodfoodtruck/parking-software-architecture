@@ -4,14 +4,14 @@ import ParkingLotRow from "./ParkingLotRow"
 interface ParkingLotGridProps {
     parkingLotsByName: Map<string, IParkingLotData>
     selectedLotId: number | null
-    isElectricUser: boolean
+    isElectricCarUser: boolean
     onSelect: (id: number | null) => void
 }
 
 const ParkingLotGrid: React.FC<ParkingLotGridProps> = ({
     parkingLotsByName,
     selectedLotId,
-    isElectricUser,
+    isElectricCarUser,
     onSelect
 }) => {
     const rows = ["A", "B", "C", "D", "E", "F"]
@@ -26,7 +26,7 @@ const ParkingLotGrid: React.FC<ParkingLotGridProps> = ({
                     columns={columns}
                     lotByName={parkingLotsByName}
                     selectedLotId={selectedLotId}
-                    isElectricUser={isElectricUser}
+                    isElectricCarUser={isElectricCarUser}
                     onSelect={onSelect}
                 />
             ))}

@@ -2,20 +2,18 @@ import { useEffect, useState } from "react"
 import { IParkingLotData } from "@/store/slices/parkingSlice"
 import ParkingLotGrid from "./parking-map-section/ParkingLotGrid"
 import SelectedLotSection from "./selected-lot-section/SelectedLotSection"
-import { getAvailableParkingLots } from "@/services/parking/ParkingAvailabilityService"
 import ParkingGridHeader from "./parking-map-section/ParkingGridHeader"
+import ParkingService from "@/services/parking/parkingService"
 
 interface Props {
     parkingLots: IParkingLotData[]
-    isElectricUser: boolean
-    isUserManager: boolean
+    isElectricCarUser: boolean
     dateRange: { start: string; end: string }
 }
 
 const ParkingAvailabilitySection: React.FC<Props> = ({
     parkingLots,
-    isElectricUser,
-    isUserManager,
+    isElectricCarUser,
     dateRange
 }) => {
     const [availableLots, setAvailableLots] = useState<IParkingLotData[]>([])
@@ -25,16 +23,14 @@ const ParkingAvailabilitySection: React.FC<Props> = ({
     useEffect(() => {
         const fetchAvailability = async () => {
             setLoading(true)
-            const data = await getAvailableParkingLots(
-                parkingLots,
-                dateRange.start,
-                dateRange.end
-            )
-            setAvailableLots(data)
+            const response = await ParkingService.getParkingLots({
+                startDate: dateRange.start,
+                endDate: dateRange.end
+            })
+            setAvailableLots(response.data)
             setSelectedLotId(null)
             setLoading(false)
-        }
-
+        }        
         fetchAvailability()
     }, [dateRange, parkingLots])
 
@@ -50,16 +46,16 @@ const ParkingAvailabilitySection: React.FC<Props> = ({
             {selectedLot && (
                 <SelectedLotSection
                     selectedLot={selectedLot}
-                    isUserManager={isUserManager}
+                    selectedDateRange={dateRange}
                 />
             )}
             <div className="flex flex-col rounded-lg shadow-sm p-6 gap-6">
-                <ParkingGridHeader isElectricUser={isElectricUser}/>
+                <ParkingGridHeader isElectricCarUser={isElectricCarUser}/>
 
                 <ParkingLotGrid
                     parkingLotsByName={parkingLotsByName}
                     selectedLotId={selectedLotId}
-                    isElectricUser={isElectricUser}
+                    isElectricCarUser={isElectricCarUser}
                     onSelect={setSelectedLotId}
                 />
             </div>
