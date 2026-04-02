@@ -1,6 +1,13 @@
 import { connect, ConsumeMessage } from "amqplib"
+import { EmailService } from "./services/Email.service"
+import { NotificationService } from "./services/Notification.service"
+import { ReservationHandler } from "./handlers/Reservation.handler"
 
 export const runConsumer = async (): Promise<void> => {
+    const emailService = new EmailService()
+    const notificationService = new NotificationService(emailService)
+    const reservationHandler = new ReservationHandler(notificationService)
+
     const connection = await connect(process.env.RABBITMQ_URL!)
     const channel = await connection.createChannel()
 
@@ -9,10 +16,13 @@ export const runConsumer = async (): Promise<void> => {
             console.log(`Received message from ${queue}: ${message.content.toString()}`)
             const parsedMessage = JSON.parse(message.content.toString())
 
-            if (queue === 'reservation-queue') 
+            if (queue === 'reservation-queue') {
+                await reservationHandler.handle(parsedMessage)
                 console.log('Handling email notification:', parsedMessage)
-            else 
+            }
+            else {
                 console.log('Unknown queue:', queue)
+            }
             
             channel.ack(message)
         }
