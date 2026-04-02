@@ -3,7 +3,7 @@ import morgan from "morgan"
 import logger from './logger';
 import { errorMiddleware } from './middlewares/errorMiddleware';
 import { connectDatabase } from './config/db';
-import { employeeController, parkingLotController, reservationController } from './init';
+import { dashboardController, employeeController, parkingLotController, reservationController } from './init';
 
 const main = async() => {
     const app = express();
@@ -28,6 +28,7 @@ const main = async() => {
     app.use("/parking-lots", parkingLotController.getRouter())
     app.use("/employees", employeeController.getRouter())
     app.use("/reservations", reservationController.getRouter())
+    app.use("/dashboard", dashboardController.getRouter())
 
     app.use(morgan('combined', { stream }));
     
