@@ -13,19 +13,25 @@ import {
     ArcElement
 } from 'chart.js'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { useEffect } from "react"
+import { fetchMetrics } from "@/store/slices/metricsSlice"
 
 const ManagerDashboard: React.FC = () => {
-    ChartJS.register(
-        CategoryScale,
-        LinearScale,
-        PointElement,
-        LineElement,
-        Tooltip,
-        Legend,
-        ArcElement
-    )
+    ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, ArcElement)
 
-    const mocks = Array.from({ length: 30 }, () => Math.floor(Math.random() * 61))
+    const dispatch = useAppDispatch()
+    const { metrics, isLoading } = useAppSelector(state => state.metrics)
+
+    useEffect(() => {
+        dispatch(fetchMetrics())
+    }, [dispatch])
+
+    if (! metrics || ! metrics.last30DaysNbReservations || isLoading) {
+        console.log(isLoading);
+        console.log(metrics);
+        return <div>loading metrics...</div>
+    }
 
     return (
         <div className="p-6 bg-gray-50 min-h-screen w-full">
@@ -39,7 +45,7 @@ const ManagerDashboard: React.FC = () => {
                         <CardTitle>Visites quotidiennes</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <ParkingDailyVisitsChart last30DaysNbReservations={mocks} />
+                        <ParkingDailyVisitsChart last30DaysNbReservations={metrics.last30DaysNbReservations} />
                     </CardContent>
                 </Card>
 
@@ -48,7 +54,7 @@ const ManagerDashboard: React.FC = () => {
                         <CardTitle>Taux moyen et check-in</CardTitle>
                     </CardHeader>
                     <CardContent className="flex flex-col gap-6">
-                        <ParkingAverageUsage last30DaysNbReservations={mocks} />
+                        <ParkingAverageUsage last30DaysNbReservations={metrics.last30DaysNbReservations} />
                         <CheckedInReservationPercentage checkedInPercentage={28} />
                     </CardContent>
                 </Card>
@@ -58,7 +64,7 @@ const ManagerDashboard: React.FC = () => {
                         <CardTitle>Répartition par type de place</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <ParkingLotTypeDistributionChart />
+                        <ParkingLotTypeDistributionChart electricLots={metrics.nbElectricLots}/>
                     </CardContent>
                 </Card>
             </div>

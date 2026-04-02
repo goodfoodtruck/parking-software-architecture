@@ -1,9 +1,3 @@
-/*
-how full it is on average, 
-what the proportion is of people making a reservation who don't use it, 
-and the proportion of spaces with electric chargers.
-*/
-
 import { Line } from "react-chartjs-2"
 
 interface ParkingDailyVisitsChartProps {

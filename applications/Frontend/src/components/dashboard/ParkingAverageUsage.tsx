@@ -5,7 +5,7 @@ interface ParkingAverageUsageProps {
     last30DaysNbReservations: number[]
 }
 
-const ParkingAverageUsage: React.FC<ParkingAverageUsageProps> = ({ last30DaysNbReservations }) => {
+const ParkingAverageUsage: React.FC<ParkingAverageUsageProps> = ({ last30DaysNbReservations }) => {    
     const totalReservations = last30DaysNbReservations.reduce((sum, value) => sum + value, 0)
     const averageUsage = totalReservations / last30DaysNbReservations.length
     const clampedPercentage = Math.min(Math.max(averageUsage, 0), 100)
