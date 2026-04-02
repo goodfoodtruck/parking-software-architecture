@@ -11,6 +11,7 @@ export class EmployeeController extends AController {
         super()
         this.router.get("/", this.getEmployees)
         this.router.patch("/:id/reservations/:reservationId", this.checkIn)
+        this.router.post("/createUser", this.createEmployee)
     }
 
     private getEmployees = async(req: Request, res: Response, next: NextFunction) => {
@@ -30,6 +31,19 @@ export class EmployeeController extends AController {
             await this.reservationService.checkIn(+reservationId, +id);
 
             return res.status(204).send();
+        }
+        catch (error) {
+            next(error)
+        }
+    }
+
+    private createEmployee = async(req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { firstName, lastName, email, phone, automobile, electric } = req.body;
+
+            const newEmployee = await this.employeeService.createEmployee({ firstName, lastName, email, phone, automobile, electric });
+
+            return res.status(201).json(newEmployee);
         }
         catch (error) {
             next(error)
