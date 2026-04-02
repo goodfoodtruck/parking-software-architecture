@@ -1,8 +1,8 @@
-import { parkingPlacesData } from "@/store/slices/parkingSlice"
+import { IParkingLotData } from "@/store/slices/parkingSlice"
 import ParkingLotRow from "./ParkingLotRow"
 
 interface ParkingLotGridProps {
-    parkingLotsByName: Map<string, parkingPlacesData>
+    parkingLotsByName: Map<string, IParkingLotData>
     selectedLotId: number | null
     isElectricUser: boolean
     onSelect: (id: number | null) => void

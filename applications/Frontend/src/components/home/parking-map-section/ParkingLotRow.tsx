@@ -1,10 +1,10 @@
-import { parkingPlacesData } from "@/store/slices/parkingSlice"
+import { IParkingLotData } from "@/store/slices/parkingSlice"
 import ParkingLotCell from "./ParkingLotCell"
 
 interface ParkingLotRowProps {
     row: string
     columns: number[]
-    lotByName: Map<string, parkingPlacesData>
+    lotByName: Map<string, IParkingLotData>
     selectedLotId: number | null
     isElectricUser: boolean
     onSelect: (id: number | null) => void

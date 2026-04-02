@@ -1,8 +1,8 @@
-import { parkingPlacesData } from "@/store/slices/parkingSlice"
+import { IParkingLotData } from "@/store/slices/parkingSlice"
 
 interface ParkingLotCellProps {
     name: string
-    lot: parkingPlacesData
+    lot: IParkingLotData
     isSelected: boolean
     isElectricUser: boolean
     onSelect: (id: number | null) => void
