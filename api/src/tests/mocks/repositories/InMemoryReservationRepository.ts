@@ -10,6 +10,10 @@ export class InMemoryReservationRepository implements IParkingLotReservationRepo
         this.idCounter = initialData.length + 1
     }
 
+    async findAll(): Promise<Reservation[]> {
+        return this.reservations
+    }
+    
     async findById(id: number): Promise<Reservation | null> {
         return this.reservations.find(r => r.id === id) || null;
     }
@@ -31,13 +35,13 @@ export class InMemoryReservationRepository implements IParkingLotReservationRepo
         )
     }
 
-    async isAvailable(parkingLotId: number, startDate: Date, endDate: Date): Promise<boolean> {
+    async isAvailable(parkingLotId: number, dates: Date[]): Promise<boolean> {
         const existingReservation = this.reservations.find(r =>
-            r.parkingLot.id === parkingLotId
-            && r.startDate <= endDate
-            && r.endDate >= startDate
+            r.parkingLot.id === parkingLotId &&
+            dates.some(date => 
+                new Date(r.date).setHours(0,0,0,0) === new Date(date).setHours(0,0,0,0)
+            )
         )
-
         return existingReservation === undefined
     }
 

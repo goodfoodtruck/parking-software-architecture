@@ -15,11 +15,15 @@ export class TypeORMParkingLotReservationRepository implements IParkingLotReserv
         });
     }
 
-    save(reservation: Reservation): Promise<Reservation> {
+    async findAll(): Promise<Reservation[]> {
+        return this.repository.find()
+    }
+
+    async save(reservation: Reservation): Promise<Reservation> {
         return this.repository.save(reservation)
     }
     
-    findByParkingLotId(id: number): Promise<Reservation | null> {
+    async findByParkingLotId(id: number): Promise<Reservation | null> {
         return this.repository.findOneBy({ id })
     }
 
@@ -31,16 +35,13 @@ export class TypeORMParkingLotReservationRepository implements IParkingLotReserv
             .getMany()
     }
 
-    async isAvailable(parkingLotId: number, startDate: Date, endDate: Date): Promise<boolean> {
+    async isAvailable(parkingLotId: number, dates: Date[]): Promise<boolean> {
         const existingReservation = await this.repository
             .createQueryBuilder("r")
             .where("r.parking_lot_id = :parkingLotId", { parkingLotId })
-            .andWhere(
-                "(r.start_date <= :startDate AND r.end_date >= :endDate)",
-                { startDate, endDate }
-            )
+            .andWhere("r.date IN (:...dates)", { dates })
             .getOne()
-
+            
         return existingReservation === null
     }
 }

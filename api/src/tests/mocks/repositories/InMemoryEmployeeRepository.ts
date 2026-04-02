@@ -19,4 +19,9 @@ export class InMemoryEmployeeRepository implements IEmployeeRepository {
     add(employee: Employee) {
         this.employees.push(employee)
     }
+
+    async save(employee: Employee): Promise<Employee> {
+        this.employees.push(employee)
+        return employee
+    }
 }

@@ -13,4 +13,8 @@ export class TypeORMEmployeeRepository implements IEmployeeRepository {
     findAll(): Promise<Employee[]> {
         return this.repository.find()
     }
+
+    save(employee: Employee): Promise<Employee> {
+        return this.repository.save(employee)
+    }
 }

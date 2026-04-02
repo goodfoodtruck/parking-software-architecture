@@ -1,10 +1,13 @@
+import axiosInstance from '@/lib/axios';
+import { UserCreation } from '@/pages/resources/App';
 import { UserData } from '@/store/slices/userSlice';
 import { AxiosResponse } from 'axios';
+import { create } from 'node:domain';
 
 const UserService = {
   getCurretUser(): Promise<AxiosResponse<UserData>> {
     // return axiosInstance.get<UserData>(
-    //   `${process.env.NEXT_PUBLIC_BACK_URL}/me`
+    //   `/me`
     // );
 
     const mockedUserProfile: UserData = {
@@ -15,7 +18,7 @@ const UserService = {
       email: "doe.john@gmail.com",
       automobile: "Tesla Model 3",
       electric: true,
-      parked: false,
+      role: 'EMPLOYEE'
     };
 
     return Promise.resolve({
@@ -25,6 +28,25 @@ const UserService = {
       headers: {},
       config: {} as any,
     } as AxiosResponse<UserData>);
+  },
+
+  getAllEmployees(): Promise<AxiosResponse<UserData[]>> {
+    return axiosInstance.get<UserData[]>(
+      '/employees'
+    );
+  },
+
+  checkIn (id: number, reservationId: number): Promise<AxiosResponse<void>> {
+    return axiosInstance.post(
+      `/employees/${id}/reservations/${reservationId}`
+    );
+  },
+
+  createEmployee(employeeData: UserCreation): Promise<AxiosResponse<UserData>> {
+    return axiosInstance.post<UserData>(
+      '/employees/createUser',
+      employeeData
+    );
   }
 };
 

@@ -8,22 +8,28 @@ export class ParkingLotService {
         private readonly reservationService: ReservationService
     ) {}
 
-    async getAll(): Promise<ParkingLotDTO[]> {
-        const parkingLotsEntities = await this.parkingLotRepository.findAll();
-        if (! parkingLotsEntities || ! parkingLotsEntities.length)
+    async getParkingLots(startDate?: Date, endDate?: Date): Promise<ParkingLotDTO[]> {
+        const parkingLotsEntities = await this.parkingLotRepository.findAll()
+        if (! parkingLotsEntities || ! parkingLotsEntities.length) {
             throw new Error("ERROR: No parking lots were found.")
-
-        const parkingLots: ParkingLotDTO[] = []
-
-        for (const parkingLot of parkingLotsEntities) {
-            const isAvailable = await this.reservationService.isAvailable(parkingLot.id);
-            parkingLots.push({
-                id: parkingLot.id,
-                name: parkingLot.name,
-                isElectric: parkingLot.electric,
-                available: isAvailable
-            });
         }
+        
+        const parkingLots: ParkingLotDTO[] = await Promise.all(
+            parkingLotsEntities.map(async (parkingLot) => {
+                const isAvailable = await this.reservationService.isAvailable(
+                    parkingLot.id,
+                    startDate,
+                    endDate
+                )
+
+                return {
+                    id: parkingLot.id,
+                    name: parkingLot.name,
+                    isElectric: parkingLot.electric,
+                    available: isAvailable
+                }
+            })
+        )
 
         return parkingLots
     }

@@ -15,14 +15,27 @@ export class ReservationController extends AController {
         try {
             const { employeeId, parkingLotId, startDate, endDate } = req.body;
 
-            const reservation = await this.reservationService.createReservation({
+            const reservations = await this.reservationService.createReservation({
                 employeeId,
                 parkingLotId,
                 startDate,
                 endDate
             })
 
-            return res.status(201).json(reservation)
+            return res.status(201).json(reservations)
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    private getCheckedInByParkingLot = async(req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.params;
+
+            const reservations = await this.reservationService.getCheckedInByParkingLot(+id);
+
+            return res.status(200).json(reservations);
 
         } catch (error) {
             next(error)

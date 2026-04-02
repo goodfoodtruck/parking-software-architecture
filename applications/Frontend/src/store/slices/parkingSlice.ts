@@ -1,7 +1,7 @@
 import ParkingService from '@/services/parking/parkingService'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-export interface parkingPlacesData {
+export interface IParkingLotData {
   id: number
   name: string
   available: boolean
@@ -9,7 +9,7 @@ export interface parkingPlacesData {
 }
 
 interface ParkingState {
-  parkingPlaces: parkingPlacesData[],
+  parkingPlaces: IParkingLotData[],
   status: 'pending' | 'fulfilled' | 'rejected',
   isLoading: boolean
 }
@@ -27,6 +27,7 @@ export const fetchParkingPlaces = createAsyncThunk(
     return res.data;
   }
 )
+
 
 const parkingSlice = createSlice({
   name: 'parking',
@@ -47,7 +48,7 @@ const parkingSlice = createSlice({
       })
       .addCase(
         fetchParkingPlaces.fulfilled,
-        (state, action: PayloadAction<parkingPlacesData[]>) => {
+        (state, action: PayloadAction<IParkingLotData[]>) => {
           state.status = 'fulfilled'
           state.parkingPlaces = action.payload
           state.isLoading = false

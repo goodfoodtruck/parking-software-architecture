@@ -7,6 +7,8 @@ import { TypeORMParkingLotRepository } from './infrastructure/repositories/typeo
 import { EmployeeService } from './services/Employee.service';
 import { ParkingLotController } from './controllers/ParkingLot.controller';
 import { ParkingLotService } from './services/ParkingLot.service';
+import { ManagerDashboardController } from './controllers/ManagerDashboard.controller';
+import { ManagerDashboardService } from './services/ManagerDashboard.service';
 
 const employeeRepository = new TypeORMEmployeeRepository()
 const reservationRepository = new TypeORMParkingLotReservationRepository()
@@ -32,6 +34,13 @@ const createParkingLotController = (): ParkingLotController => {
     return controller
 }
 
+const createManagerDashboardController = (): ManagerDashboardController => {
+    const managerDashboardService = new ManagerDashboardService(reservationRepository)
+    const controller = new ManagerDashboardController(managerDashboardService)
+    return controller
+}
+
 export const reservationController = createReservationController()
 export const employeeController = createEmployeeController()
 export const parkingLotController = createParkingLotController()
+export const dashboardController = createManagerDashboardController()

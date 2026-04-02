@@ -2,9 +2,9 @@ import ReservationService from '@/services/reservation/reservationService'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface IReservationPlaceBody {
-    employeeId: string, 
-    parkingLotId: string, 
-    startDate: Date, 
+    employeeId: number
+    parkingLotId: number 
+    startDate: Date
     endDate: Date
 }
 
@@ -33,6 +33,14 @@ export const reserveParkingPlace = createAsyncThunk(
   'auth/fetchCurrentUser',
   async (body: IReservationPlaceBody) => {
     const res = await ReservationService.reserveParkingPlace(body);
+    return res.data;
+  }
+)
+
+export const getCheckedInByParkingLot = createAsyncThunk(
+  'reservation/getCheckedInByParkingLot',
+  async (parkingLotId: number) => {
+    const res = await ReservationService.getCheckedInByParkingLot(parkingLotId);
     return res.data;
   }
 )
@@ -67,6 +75,25 @@ const reservationSlice = createSlice({
         state.isLoading = false,
         state.parkingPlace = null
       })
+    builder
+      .addCase(getCheckedInByParkingLot.pending, state => {
+        state.status = 'pending'
+        state.isLoading = true
+
+      })
+      .addCase(
+        getCheckedInByParkingLot.fulfilled,
+        (state, action: PayloadAction<IReservationPlace[]>) => {
+          state.status = 'fulfilled'
+          state.parkingPlace = action.payload[0] || null
+          state.isLoading = false
+        }
+      )
+      .addCase(getCheckedInByParkingLot.rejected, (state) => {
+        state.status = 'rejected'
+        state.isLoading = false,
+        state.parkingPlace = null
+      })  
   },
 })
 
