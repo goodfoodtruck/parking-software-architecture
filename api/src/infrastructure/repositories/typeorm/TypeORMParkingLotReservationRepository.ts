@@ -8,11 +8,15 @@ export class TypeORMParkingLotReservationRepository implements IParkingLotReserv
 
     constructor() {}
 
-    save(reservation: Reservation): Promise<Reservation> {
+    async findAll(): Promise<Reservation[]> {
+        return this.repository.find()
+    }
+
+    async save(reservation: Reservation): Promise<Reservation> {
         return this.repository.save(reservation)
     }
     
-    findByParkingLotId(id: number): Promise<Reservation | null> {
+    async findByParkingLotId(id: number): Promise<Reservation | null> {
         return this.repository.findOneBy({ id })
     }
 

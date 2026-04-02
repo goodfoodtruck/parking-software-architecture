@@ -11,6 +11,10 @@ export class InMemoryReservationRepository implements IParkingLotReservationRepo
         this.idCounter = initialData.length + 1
     }
 
+    async findAll(): Promise<Reservation[]> {
+        return this.reservations
+    }
+
     async save(reservation: Reservation): Promise<Reservation> {
         reservation.id = this.idCounter++
         this.reservations.push(reservation)
