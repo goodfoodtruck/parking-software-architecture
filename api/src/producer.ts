@@ -1,6 +1,6 @@
 import { connectRabbitMQ } from "./config/rabbitmq"
 
-export const publishReservationCreated = async (payload: any) => {
+export const publishReservationCreated = async (payload: Record<string, string>) => {
     const channel = await connectRabbitMQ()
 
     const message = Buffer.from(JSON.stringify(payload))

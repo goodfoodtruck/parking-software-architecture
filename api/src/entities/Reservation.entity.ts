@@ -15,11 +15,8 @@ export class Reservation {
   @JoinColumn({ name: "parking_lot_id" })
   parkingLot!: ParkingLot;
 
-  @Column({ name: "start_date" })
-  startDate!: Date;
-
-  @Column({ name: "end_date" })
-  endDate!: Date;
+  @Column({ name: "date" })
+  date!: Date;
 
   @Column({ name: "checked_in", default: false })
   checkedIn!: boolean;

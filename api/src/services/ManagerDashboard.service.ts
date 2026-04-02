@@ -15,15 +15,15 @@ export class ManagerDashboardService {
         const last30Days = Array.from({ length: 30 }, (_, i) => {
             const d = new Date(today)
             d.setDate(today.getDate() - (29 - i))
+            d.setHours(0, 0, 0, 0)
             return d
         })
 
         const last30DaysNbReservations = last30Days.map(day => {
             return allReservations.filter(reservation => {
-                const start = new Date(reservation.startDate)
-                const end = new Date(reservation.endDate)
-
-                return ((start <= day) && (end >= day))
+                const reservationDate = new Date(reservation.date)
+                reservationDate.setHours(0, 0, 0, 0)
+                return reservationDate.getTime() === day.getTime()
             }).length
         })
 
