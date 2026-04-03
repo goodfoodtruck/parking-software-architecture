@@ -1,3 +1,4 @@
+import { Between } from "typeorm";
 import { AppDataSource } from "../../../config/db";
 import { Reservation } from "../../../entities/Reservation.entity";
 import { IParkingLotReservationRepository } from "../../../repositories/IParkingLotReservationRepository";
@@ -7,6 +8,15 @@ export class TypeORMParkingLotReservationRepository implements IParkingLotReserv
     private readonly repository = AppDataSource.getRepository(Reservation)
 
     constructor() {}
+
+    async findByDate(date: Date): Promise<Reservation[]> {
+        const start = new Date(date.setHours(0, 0, 0, 0));
+        const end = new Date(date.setHours(23, 59, 59, 999)); 
+        
+        return await this.repository.find({
+            where: { date: Between(start, end) }
+        });
+    }
     
     async findById(id: number): Promise<Reservation | null> {
         return this.repository.findOne({
@@ -40,6 +50,7 @@ export class TypeORMParkingLotReservationRepository implements IParkingLotReserv
             .createQueryBuilder("r")
             .where("r.parking_lot_id = :parkingLotId", { parkingLotId })
             .andWhere("r.date IN (:...dates)", { dates })
+            .andWhere("r.cancelled = :cancelled", { cancelled: false })
             .getOne()
             
         return existingReservation === null

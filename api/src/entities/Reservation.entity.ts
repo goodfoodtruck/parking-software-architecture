@@ -20,4 +20,8 @@ export class Reservation {
 
   @Column({ name: "checked_in", default: false })
   checkedIn!: boolean;
+
+  // TODO rajouter un champ cancelled: boolean qu'on regardera pendant checkin et available
+  @Column({ name: "cancelled", default: false })
+  cancelled!: boolean;
 }

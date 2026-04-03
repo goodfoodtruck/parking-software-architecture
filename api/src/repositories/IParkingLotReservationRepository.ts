@@ -7,4 +7,5 @@ export interface IParkingLotReservationRepository {
     findByParkingLotId(id: number): Promise<Reservation | null>
     isAvailable(parkingLotId: number, dates: Date[]): Promise<boolean>
     findCheckedInByParkingLotId(id: number): Promise<Reservation[]>
+    findByDate(date: Date): Promise<Reservation[]>
 }

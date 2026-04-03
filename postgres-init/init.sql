@@ -26,7 +26,8 @@ CREATE TABLE reservation (
     employee_id INT NOT NULL REFERENCES employee(id) ON DELETE CASCADE,
     parking_lot_id INT NOT NULL REFERENCES parking_lot(id) ON DELETE CASCADE,
     date TIMESTAMP NOT NULL,
-    checked_in BOOLEAN NOT NULL DEFAULT false
+    checked_in BOOLEAN NOT NULL DEFAULT false,
+    cancelled BOOLEAN NOT NULL DEFAULT false
 );
 
 -- insérer les employés
@@ -49,6 +50,6 @@ FROM (
 ) t;
 
 -- insérer les réservations
-INSERT INTO reservation (employee_id, parking_lot_id, start_date, end_date, checked_in) VALUES
+INSERT INTO reservation (employee_id, parking_lot_id, date, checked_in) VALUES
   ((SELECT id FROM employee WHERE name='Alice'), (SELECT id FROM parking_lot WHERE name='A01'), NOW(), false),
   ((SELECT id FROM employee WHERE name='Bob'),   (SELECT id FROM parking_lot WHERE name='B01'), NOW(), true);
