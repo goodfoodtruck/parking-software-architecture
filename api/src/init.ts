@@ -9,6 +9,7 @@ import { ParkingLotController } from './controllers/ParkingLot.controller';
 import { ParkingLotService } from './services/ParkingLot.service';
 import { ManagerDashboardController } from './controllers/ManagerDashboard.controller';
 import { ManagerDashboardService } from './services/ManagerDashboard.service';
+import { CronScheduler } from './cron/CronScheduler';
 
 const employeeRepository = new TypeORMEmployeeRepository()
 const reservationRepository = new TypeORMParkingLotReservationRepository()
@@ -44,3 +45,12 @@ export const reservationController = createReservationController()
 export const employeeController = createEmployeeController()
 export const parkingLotController = createParkingLotController()
 export const dashboardController = createManagerDashboardController()
+
+
+const createCronScheduler = (): CronScheduler => {
+    const reservationService = new ReservationService(employeeRepository, parkingLotRepository, reservationRepository)
+    const cronScheduler = new CronScheduler(reservationService)
+    return cronScheduler
+}
+
+export const cronScheduler = createCronScheduler()

@@ -3,7 +3,7 @@ import morgan from "morgan"
 import logger from './logger';
 import { errorMiddleware } from './middlewares/errorMiddleware';
 import { connectDatabase } from './config/db';
-import { dashboardController, employeeController, parkingLotController, reservationController } from './init';
+import { dashboardController, employeeController, parkingLotController, reservationController, cronScheduler } from './init';
 
 const main = async() => {
     const app = express();
@@ -31,6 +31,8 @@ const main = async() => {
     app.use("/dashboard", dashboardController.getRouter())
 
     app.use(morgan('combined', { stream }));
+
+    cronScheduler.initJobs();
     
     app.use(errorMiddleware);
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

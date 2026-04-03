@@ -90,6 +90,9 @@ export class ReservationService {
         if (employeeId !== reservation.employee.id) 
             throw new Error("ERROR: The person doing to check in must be the same that reserved the parking lot.");
 
+        if (reservation.cancelled)
+            throw new Error(`ERROR: Reservation ${id} was cancelled automatically.`);
+
         await this.reservationRepository.save({
             ...reservation,
             checkedIn: true
@@ -126,5 +129,19 @@ export class ReservationService {
         const durationInDays = Math.floor((end.getTime() - start.getTime()) / msPerDay) + 1
 
         return ((durationInDays >= 1) && (durationInDays <= maxDurationInDays))
+    }
+
+    async cancelReservationsAutomatically() {
+        const today = new Date(Date.now());
+        const todayReservations = await this.reservationRepository.findByDate(today);
+        
+        for (const reservation of todayReservations) {
+            if (!reservation.checkedIn) {
+                await this.reservationRepository.save({
+                    ...reservation,
+                    cancelled: true
+                });
+            }
+        }
     }
 }

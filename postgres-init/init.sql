@@ -26,7 +26,8 @@ CREATE TABLE reservation (
     employee_id INT NOT NULL REFERENCES employee(id) ON DELETE CASCADE,
     parking_lot_id INT NOT NULL REFERENCES parking_lot(id) ON DELETE CASCADE,
     date TIMESTAMP NOT NULL,
-    checked_in BOOLEAN NOT NULL DEFAULT false
+    checked_in BOOLEAN NOT NULL DEFAULT false,
+    cancelled BOOLEAN NOT NULL DEFAULT false
 );
 
 -- insérer les employés
