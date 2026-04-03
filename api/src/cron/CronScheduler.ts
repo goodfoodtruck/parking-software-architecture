@@ -10,7 +10,14 @@ export class CronScheduler {
         this.cancelAllReservationsEachDay();
     }
 
+    private scheduleCron(schedule: string, job: () => void, label: string) {
+        cron.schedule(schedule, () => {
+            job();
+            console.log(`[CRON] '${label}' executed.`);
+        }, { timezone: 'Europe/Paris' });
+    }
+
     private cancelAllReservationsEachDay() {
-        cron.schedule('0 11 * * *', console.log);
+        this.scheduleCron('0 11 * * *', () => this.reservationService.cancelReservationsAutomatically(), 'cancelAllReservationsEachDay');
     }
 }
