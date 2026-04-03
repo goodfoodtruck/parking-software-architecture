@@ -10,7 +10,7 @@ const Navbar: React.FC = () => {
         { label: "Accueil", path: "/", roles: ["EMPLOYEE", "MANAGER", "SECRETARY"] },
         { label: "Profil", path: "/profil", roles: ["EMPLOYEE", "MANAGER", "SECRETARY"] },
         { label: "Dashboard", path: "/dashboard", roles: ["MANAGER"] },
-        { label: "Ressources", path: "/resources", roles: ["SECRETARY"] },
+        { label: "Ressources", path: "/resources", roles: ["EMPLOYEE", "MANAGER", "SECRETARY"] },
         { label: "Se connecter", path: "/login", roles: [] }
     ]
 
